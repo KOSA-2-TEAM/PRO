@@ -17,7 +17,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VisitedLocations {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VISITIED_LOCATIONS_SEQ_GENERATOR")
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VISITIED_LOCATIONS_SEQ_GENERATOR")
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VISITIED_LOCATIONS_SEQ_GEN")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VISITIED_LOCATIONS_SEQ")
     private Integer locationIdx;
     @ManyToOne
     @JoinColumn(name = "travel_idx")
