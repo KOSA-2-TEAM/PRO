@@ -20,7 +20,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/travelboards")
 @RequiredArgsConstructor
-public class TravelBoardController {
+public class Test2_TravelBoardController {
 
     private final TravelBoardService travelBoardService;
 
@@ -37,6 +37,10 @@ public class TravelBoardController {
     }
 
     // 삭제
+//    @DeleteMapping("/{travelIdx}")
+//    public void deleteTravelBoard(@PathVariable Integer travelIdx) {
+//        travelBoardService.deleteTravelBoard(travelIdx);
+//    }
     @DeleteMapping("/{id}")
     public void deleteTravelBoard(@PathVariable Integer id) {
         travelBoardService.deleteTravelBoard(id);

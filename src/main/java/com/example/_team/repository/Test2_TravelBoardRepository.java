@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import com.example._team.domain.TravelBoard;
 
 @Repository
-public interface TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
+public interface Test2_TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
 
 	Optional<TravelBoard> findByTravelIdx(Integer travelIdx);
 	
@@ -18,6 +18,7 @@ public interface TravelBoardRepository extends JpaRepository<TravelBoard, Intege
     Optional<TravelBoard> findById(@Param("id") Integer id);
 	
 	@Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM = 1", nativeQuery = true)
+//	TravelBoard findRandomTravelBoard();
 	TravelBoard findById();
 	
 }

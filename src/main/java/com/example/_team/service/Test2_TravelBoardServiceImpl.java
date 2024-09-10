@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TravelBoardServiceImpl implements TravelBoardService {
+public class Test2_TravelBoardServiceImpl implements TravelBoardService {
 
 	@Autowired
     private final TravelBoardRepository travelBoardRepository;
@@ -33,6 +33,8 @@ public class TravelBoardServiceImpl implements TravelBoardService {
 	@Autowired
 	private final ThemeRepository themeRepository;
 	
+	
+
 	// 생성
     @Override
     @Transactional
@@ -48,8 +50,28 @@ public class TravelBoardServiceImpl implements TravelBoardService {
 
         TravelBoard savedTravelBoard = travelBoardRepository.save(travelBoard);
         
-        return convertToResponseDto(savedTravelBoard);
+//        // 이미지 추가
+//        if (requestDto.getImagePaths() != null) {
+//            for (String imagePath : requestDto.getImagePaths()) {
+//                TravelImages image = new TravelImages();
+//                image.setImagePath(imagePath);
+//                image.setUploadedAt(LocalDateTime.now());
+//                image.setTravelIdx(savedTravelBoard);
+//                travelImagesRepository.save(image);
+//            }
+//        }
+//
+//        // 테마 추가
+//        if (requestDto.getThemeIds() != null) {
+//            for (Integer themeId : requestDto.getThemeIds()) {
+//                Theme theme = themeRepository.findById(themeId)
+//                        .orElseThrow(() -> new DataNotFoundException("Theme not found"));
+//                theme.setTravelIdx(savedTravelBoard);
+//                themeRepository.save(theme);
+//            }
+//        }
         
+        return convertToResponseDto(savedTravelBoard);
     }
 
     // 수정
@@ -67,25 +89,32 @@ public class TravelBoardServiceImpl implements TravelBoardService {
         travelBoard.setEndDate(requestDto.getEndDate());
         travelBoard.setIsPublic(requestDto.getIsPublic());
 
-        // 기존 이미지 업데이트
+//        TravelBoard updatedTravelBoard = travelBoardRepository.save(travelBoard);
+
+     // 기존 이미지 업데이트
         if (requestDto.getImagePaths() != null) {
-        	
+            // 기존 이미지 조회
             List<TravelImages> existingImages = travelImagesRepository.findByTravelIdx(travelBoard);
-            
+
+            // 기존 이미지 경로 목록
             List<String> existingImagePaths = existingImages.stream()
                 .map(TravelImages::getImagePath)
                 .collect(Collectors.toList());
-            
+
+            // 새로 입력된 이미지 경로 목록
             List<String> newImagePaths = requestDto.getImagePaths();
-            
+
+            // 추가할 이미지 경로 필터링
             List<String> imagesToAdd = newImagePaths.stream()
                 .filter(imagePath -> !existingImagePaths.contains(imagePath))
                 .collect(Collectors.toList());
-            
+
+            // 삭제할 이미지 경로 필터링
             List<String> imagesToRemove = existingImagePaths.stream()
                 .filter(imagePath -> !newImagePaths.contains(imagePath))
                 .collect(Collectors.toList());
-            
+
+            // 새로 추가할 이미지 저장
             for (String imagePath : imagesToAdd) {
                 TravelImages image = new TravelImages();
                 image.setImagePath(imagePath);
@@ -93,7 +122,8 @@ public class TravelBoardServiceImpl implements TravelBoardService {
                 image.setTravelIdx(travelBoard);
                 travelImagesRepository.save(image);
             }
-            
+
+            // 삭제할 이미지 제거
             for (String imagePath : imagesToRemove) {
                 TravelImages imageToRemove = existingImages.stream()
                     .filter(image -> image.getImagePath().equals(imagePath))
@@ -105,30 +135,36 @@ public class TravelBoardServiceImpl implements TravelBoardService {
 
         // 기존 테마 업데이트
         if (requestDto.getThemeIds() != null) {
-        	
+            // 기존 테마 조회
             List<Theme> existingThemes = themeRepository.findByTravelIdx(travelBoard);
-            
+
+            // 기존 테마 ID 목록
             List<Integer> existingThemeIds = existingThemes.stream()
                 .map(Theme::getThemeIdx)
                 .collect(Collectors.toList());
-            
+
+            // 새로 입력된 테마 ID 목록
             List<Integer> newThemeIds = requestDto.getThemeIds();
-            
+
+            // 추가할 테마 ID 필터링
             List<Integer> themesToAdd = newThemeIds.stream()
                 .filter(themeId -> !existingThemeIds.contains(themeId))
                 .collect(Collectors.toList());
-            
+
+            // 삭제할 테마 ID 필터링
             List<Integer> themesToRemove = existingThemeIds.stream()
                 .filter(themeId -> !newThemeIds.contains(themeId))
                 .collect(Collectors.toList());
-            
+
+            // 새로 추가할 테마 저장
             for (Integer themeId : themesToAdd) {
                 Theme theme = themeRepository.findById(themeId)
                     .orElseThrow(() -> new DataNotFoundException("Theme not found"));
                 theme.setTravelIdx(travelBoard);
                 themeRepository.save(theme);
             }
-            
+
+            // 삭제할 테마 제거
             for (Integer themeId : themesToRemove) {
                 Theme themeToRemove = existingThemes.stream()
                     .filter(theme -> theme.getThemeIdx().equals(themeId))
@@ -140,29 +176,61 @@ public class TravelBoardServiceImpl implements TravelBoardService {
         
         TravelBoard updatedTravelBoard = travelBoardRepository.save(travelBoard);
         return convertToResponseDto(updatedTravelBoard);
-        
     }
+//    @Override
+//    @Transactional
+//    public TravelBoardResponseUpdateDto updateTravelBoard(Integer id, TravelBoardResponseUpdateDto requestDto) {
+//    	
+//        TravelBoard travelBoard = travelBoardRepository.findById(id)
+//            .orElseThrow(() -> new DataNotFoundException("TravelBoard not found"));
+//
+//        travelBoard.setTitle(requestDto.getTitle());
+//        travelBoard.setContent(requestDto.getContent());
+//        travelBoard.setRegion(requestDto.getRegion());
+//        travelBoard.setStatDate(requestDto.getStatDate());
+//        travelBoard.setEndDate(requestDto.getEndDate());
+//        travelBoard.setIsPublic(requestDto.getIsPublic());
+//        travelBoard.set
+//
+////        TravelBoard updatedTravelBoard = travelBoardRepository.save(travelBoard);
+//
+//        
+//        
+//        TravelBoard updatedTravelBoard = travelBoardRepository.save(travelBoard);
+//        return convertToResponseDto(updatedTravelBoard);
+//    }
 
     // 삭제
     @Override
     @Transactional
     public void deleteTravelBoard(Integer id) {
     	
+//        if (!travelBoardRepository.existsById(id)) {
+//            throw new DataNotFoundException("TravelBoard not found");
+//        }
+//        
+//        TravelBoard travelBoard = travelBoardRepository.getReferenceById(id);
+//        
+//        travelImagesRepository.deleteByTravelIdx(travelBoard);
+//        themeRepository.deleteByTravelIdx(travelBoard);
+//        travelBoardRepository.deleteById(id);
+    	
     	TravelBoard travelBoard = travelBoardRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("TravelBoard not found"));
 
+            // 관련 이미지와 테마 삭제
             travelImagesRepository.deleteByTravelIdx(travelBoard);
-            
             themeRepository.deleteByTravelIdx(travelBoard);
 
+            // 여행 보드 삭제
             travelBoardRepository.delete(travelBoard);
-            
     }
 
     // 특정 조회
     @Override
     public TravelBoardResponseDto getTravelBoard(Integer id) {
     	
+//    	TravelBoard travelBoard = travelBoardRepository.findRandomTravelBoard();
     	TravelBoard travelBoard = travelBoardRepository.findById(id)
                 .orElseThrow(() -> new DataNotFoundException("TravelBoard not found"));
     	
@@ -185,7 +253,6 @@ public class TravelBoardServiceImpl implements TravelBoardService {
                         .name(theme.getName())
                         .build())
                 .collect(Collectors.toList());
-        
         return TravelBoardResponseDto.builder()
         		.title(travelBoard.getTitle())
                 .content(travelBoard.getContent())
@@ -196,11 +263,20 @@ public class TravelBoardServiceImpl implements TravelBoardService {
                 .travelImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
-        
     }
 
     private TravelBoardResponseDto convertToResponseDto(TravelBoard travelBoard) {
     	
+//        TravelBoardResponseDto responseDto = new TravelBoardResponseDto();
+//        
+//        responseDto.setTitle(travelBoard.getTitle());
+//        responseDto.setContent(travelBoard.getContent());
+//        responseDto.setRegion(travelBoard.getRegion());
+//        responseDto.setStatDate(travelBoard.getStatDate());
+//        responseDto.setEndDate(travelBoard.getEndDate());
+//        responseDto.setIsPublic(travelBoard.getIsPublic());
+//
+//        return responseDto;
     	List<TravelAlbumImageListDTO> imageList = travelImagesRepository.findByTravelIdx(travelBoard)
                 .stream()
                 .map(image -> TravelAlbumImageListDTO.builder()
@@ -227,18 +303,21 @@ public class TravelBoardServiceImpl implements TravelBoardService {
                 .travelImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
-        
     }
 
     // 전체 조회
 	@Override
     public List<TravelBoardResponseDto> getAllTravelBoards() {
 		
+//        List<TravelBoard> travelBoards = travelBoardRepository.findAll();
+//        
+//        return travelBoards.stream()
+//            .map(this::convertToResponseDto)
+//            .collect(Collectors.toList());
 		return travelBoardRepository.findAll()
                 .stream()
                 .map(this::convertToResponseDto)
                 .collect(Collectors.toList());
-		
     }
 	
 }

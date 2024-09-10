@@ -21,7 +21,7 @@ public interface Test_TravelBoardRepository extends JpaRepository<TravelBoard, I
     Optional<TravelBoard> findById(@Param("id") Integer id);
 	
 	 @Query(value = "SELECT * FROM (SELECT t.* FROM travel_board t ORDER BY DBMS_RANDOM.VALUE) WHERE ROWNUM = 1", nativeQuery = true)
-	 TravelBoard findRandomTravelBoard();
+	 TravelBoard findRandomTravelBoard(); // 랜덤
 
     
 }

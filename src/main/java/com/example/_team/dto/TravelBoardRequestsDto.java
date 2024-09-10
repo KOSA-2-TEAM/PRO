@@ -3,6 +3,7 @@ package com.example._team.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example._team.domain.Theme;
 import com.example._team.domain.enums.Region;
 
 import lombok.Data;

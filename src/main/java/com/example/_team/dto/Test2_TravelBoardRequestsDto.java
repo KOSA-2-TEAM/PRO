@@ -3,18 +3,13 @@ package com.example._team.dto;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.example._team.domain.Theme;
 import com.example._team.domain.enums.Region;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class TravelBoardResponseDto {
+public class Test2_TravelBoardRequestsDto {
 	
     private String title;
     private String content;
@@ -22,7 +17,10 @@ public class TravelBoardResponseDto {
     private LocalDateTime statDate;
     private LocalDateTime endDate;
     private Integer isPublic;
-    private List<TravelAlbumImageListDTO> travelImageList;
-    private List<TravelThemeListDTO> travelThemeList;
-
+    private List<String> imagePaths;
+    private List<Integer> themeIds;
+//    private Theme name;
+//    private List<TravelAlbumImageListDTO> travelImageList;
+//    private List<TravelThemeListDTO> travelThemeList;
+    
 }

@@ -16,4 +16,5 @@ public interface ThemeRepository extends JpaRepository<Theme, Integer> {
     void deleteByTravelIdx(TravelBoard TravelIdx);
     List<Theme> findByTravelIdx(TravelBoard travelBoard);
     
+    
 }
