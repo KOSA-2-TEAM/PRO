@@ -1,13 +1,7 @@
 package com.example._team.controller;
 
-import com.example._team.domain.Users;
-import com.example._team.domain.enums.Category;
-import com.example._team.dto.board.BoardRequestDto;
-import com.example._team.dto.board.BoardResponseDto;
-import com.example._team.exception.DataNotFoundException;
-import com.example._team.service.BoardService;
-import com.example._team.service.UserService;
-import lombok.RequiredArgsConstructor;
+import java.security.Principal;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,10 +11,23 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.security.Principal;
-import java.util.List;
+import com.example._team.domain.Users;
+import com.example._team.domain.enums.Category;
+import com.example._team.dto.board.BoardRequestDto;
+import com.example._team.dto.board.BoardResponseDto;
+import com.example._team.exception.DataNotFoundException;
+import com.example._team.service.BoardService;
+import com.example._team.service.UserService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
