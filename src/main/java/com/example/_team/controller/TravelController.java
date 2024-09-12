@@ -203,7 +203,7 @@ public class TravelController {
     	
     	model.addAttribute("response", response);
     	model.addAttribute("user", user);
-    	return "view/travel/TravelDetail";
+    	return "view/travel/TravelEdit";
     }
 
 	// 여행앨범 수정
