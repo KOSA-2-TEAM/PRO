@@ -1,0 +1,33 @@
+package com.example._team.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable() // CSRF 비활성화 (API에 따라 필요할 수 있음)
+            .authorizeRequests()
+                .antMatchers("/api/travelboards/**").authenticated() // 인증된 사용자만 접근 가능
+                .anyRequest().permitAll()
+            .and()
+            .httpBasic(); // Basic 인증 사용 (여기서는 예시로 제공됨, 실제 환경에 맞게 수정 필요)
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.inMemoryAuthentication()
+            .withUser("user")
+            .password("{noop}password") // {noop}는 암호화 없이 저장하는 설정
+            .roles("USER");
+    }
+}

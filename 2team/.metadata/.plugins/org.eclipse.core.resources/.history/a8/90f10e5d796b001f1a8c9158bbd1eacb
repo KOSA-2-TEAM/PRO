@@ -1,0 +1,7 @@
+package com.example._team.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UsersRepository extends JpaRepository<T, ID> {
+
+}

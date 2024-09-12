@@ -1,0 +1,14 @@
+package com.example._team.repository;
+
+import com.example._team.domain.TravelImages;
+import com.example._team.domain.TravelBoard;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface TravelImagesRepository extends JpaRepository<TravelImages, Integer> {
+    List<TravelImages> findByTravelIdx(TravelBoard travelBoard);
+    void deleteByTravelIdx(TravelBoard travelBoard);
+}

@@ -1,0 +1,9 @@
+package com.example._team.repository;
+
+import com.example._team.domain.TravelAlbum;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface TravelAlbumRepository extends JpaRepository<TravelAlbum, Integer> {
+}

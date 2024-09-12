@@ -1,0 +1,77 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.repository.TravelBoardRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class TravelBoardService {
+
+    private final TravelBoardRepository travelBoardRepository;
+
+    public List<TravelBoardResponseDto> getAllTravelBoards() {
+        return travelBoardRepository.findAll().stream()
+                .map(board -> new TravelBoardResponseDto(
+                        board.getTravelIdx(),
+                        board.getTitle(),
+                        board.getContent(),
+                        board.getRegion(),
+                        board.getStatDate(),
+                        board.getEndDate(),
+                        board.getIsPublic()
+                ))
+                .collect(Collectors.toList());
+    }
+
+    public TravelBoardResponseDto getTravelBoardById(Integer id) {
+        TravelBoard board = travelBoardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
+        return new TravelBoardResponseDto(
+                board.getTravelIdx(),
+                board.getTitle(),
+                board.getContent(),
+                board.getRegion(),
+                board.getStatDate(),
+                board.getEndDate(),
+                board.getIsPublic()
+        );
+    }
+
+    @Transactional
+    public void createTravelBoard(TravelBoardRequestsDto travelBoardRequestsDto) {
+        TravelBoard travelBoard = new TravelBoard();
+        travelBoard.setTitle(travelBoardRequestsDto.getTitle());
+        travelBoard.setContent(travelBoardRequestsDto.getContent());
+        travelBoard.setRegion(travelBoardRequestsDto.getRegion());
+        travelBoard.setStatDate(travelBoardRequestsDto.getStatDate());
+        travelBoard.setEndDate(travelBoardRequestsDto.getEndDate());
+        travelBoard.setIsPublic(travelBoardRequestsDto.getIsPublic());
+        travelBoardRepository.save(travelBoard);
+    }
+
+    @Transactional
+    public void updateTravelBoard(Integer id, TravelBoardRequestsDto travelBoardRequestsDto) {
+        TravelBoard travelBoard = travelBoardRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid board Id:" + id));
+        travelBoard.setTitle(travelBoardRequestsDto.getTitle());
+        travelBoard.setContent(travelBoardRequestsDto.getContent());
+        travelBoard.setRegion(travelBoardRequestsDto.getRegion());
+        travelBoard.setStatDate(travelBoardRequestsDto.getStatDate());
+        travelBoard.setEndDate(travelBoardRequestsDto.getEndDate());
+        travelBoard.setIsPublic(travelBoardRequestsDto.getIsPublic());
+        travelBoardRepository.save(travelBoard);
+    }
+
+    @Transactional
+    public void deleteTravelBoard(Integer id) {
+        travelBoardRepository.deleteById(id);
+    }
+}

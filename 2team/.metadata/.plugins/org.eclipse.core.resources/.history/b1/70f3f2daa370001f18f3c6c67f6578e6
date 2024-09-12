@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여행 앨범 수정</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(to right, #8e44ad, #3498db);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .form-container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            margin: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+    </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/tinymce@5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#content',
+            plugins: 'image code media link',
+            toolbar: 'undo redo | bold italic | alignleft aligncenter alignright | image media link code',
+            automatic_uploads: true,
+            images_upload_handler: function (blobInfo, success, failure) {
+                let xhr = new XMLHttpRequest();
+                xhr.open('POST', '/api/travel/upload-image');
+                xhr.onload = function () {
+                    if (xhr.status !== 200) {
+                        failure('HTTP Error: ' + xhr.status);
+                        return;
+                    }
+
+                    let json = JSON.parse(xhr.responseText);
+                    if (!json || typeof json.location != 'string') {
+                        failure('Invalid JSON: ' + xhr.responseText);
+                        return;
+                    }
+                    success(json.location);
+                };
+                xhr.onerror = function () {
+                    failure('XHR Error: ' + xhr.status);
+                };
+
+                let formData = new FormData();
+                formData.append('file', blobInfo.blob(), blobInfo.filename());
+                xhr.send(formData);
+            }
+        });
+
+        function addTag() {
+            const input = document.getElementById('themeInput');
+            let tagValue = input.value.trim();
+
+            if (tagValue && !document.getElementById(tagValue)) {
+                const tag = document.createElement('span');
+                tag.className = 'badge bg-primary me-1';
+                tag.id = tagValue;
+                tag.textContent = tagValue;
+
+                const closeBtn = document.createElement('span');
+                closeBtn.className = 'badge-close ms-2';
+                closeBtn.textContent = 'x';
+                closeBtn.onclick = function () {
+                    tag.remove();
+                    updateHiddenFields();
+                };
+
+                tag.appendChild(closeBtn);
+                document.getElementById('tagContainer').appendChild(tag);
+                input.value = '';
+                updateHiddenFields();
+            }
+        }
+
+        function updateHiddenFields() {
+            const tags = document.querySelectorAll('#tagContainer .badge');
+            const hiddenFieldsContainer = document.getElementById('hiddenFieldsContainer');
+            hiddenFieldsContainer.innerHTML = '';
+
+            Array.from(tags).forEach((tag, index) => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = travelThemeList[${index}].name;
+                input.value = tag.id;
+                hiddenFieldsContainer.appendChild(input);
+            });
+        }
+
+        document.getElementById('themeInput').addEventListener('keydown', function (event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                addTag();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelector('form').addEventListener('submit', function (event) {
+                tinymce.get('content').save();
+            });
+        });
+
+        function populateTags(tags) {
+            const tagContainer = document.getElementById('tagContainer');
+            tags.forEach(tag => {
+                const badge = document.createElement('span');
+                badge.className = 'badge bg-primary me-1';
+                badge.id = tag;
+                badge.textContent = tag;
+
+                const closeBtn = document.createElement('span');
+                closeBtn.className = 'badge-close ms-2';
+                closeBtn.textContent = 'x';
+                closeBtn.onclick = function () {
+                    badge.remove();
+                    updateHiddenFields();
+                };
+
+                badge.appendChild(closeBtn);
+                tagContainer.appendChild(badge);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const existingTags = [[${album.themeList}]]; // 수정해야 할 부분
+            populateTags(existingTags);
+        });
+    </script>
+</head>
+<body>
+<div class="form-container">
+    <h1>여행 앨범 수정</h1>
+    <form th:action="@{/api/travel/update/{id}(id=${album.id})}" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="_method" value="put"/> For method override
+
+        <div class="mb-3">
+            <label for="title" class="form-label">제목</label>
+            <input type="text" id="title" name="title" class="form-control" th:value="${album.title}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="region" class="form-label">지역</label>
+            <select id="region" name="region" class="form-select" required>
+                <option value="서울" th:selected="${album.region == '서울'}">서울</option>
+                <option value="인천" th:selected="${album.region == '인천'}">인천</option>
+                <option value="부산" th:selected="${album.region == '부산'}">부산</option>
+                <option value="대구" th:selected="${album.region == '대구'}">대구</option>
+                <option value="광주" th:selected="${album.region == '광주'}">광주</option>
+                <option value="대전" th:selected="${album.region == '대전'}">대전</option>
+                <option value="울산" th:selected="${album.region == '울산'}">울산</option>
+                <option value="세종" th:selected="${album.region == '세종'}">세종</option>
+                <option value="경기도" th:selected="${album.region == '경기도'}">경기도</option>
+                <option value="강원도" th:selected="${album.region == '강원도'}">강원도</option>
+                <option value="충청도" th:selected="${album.region == '충청도'}">충청도</option>
+                <option value="전라도" th:selected="${album.region == '전라도'}">전라도</option>
+                <option value="경상도" th:selected="${album.region == '경상도'}">경상도</option>
+                <option value="제주도" th:selected="${album.region == '제주도'}">제주도</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="statDate" class="form-label">여행 시작일</label>
+            <input type="date" id="statDate" name="statDate" class="form-control" th:value="${album.statDate}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="endDate" class="form-label">여행 종료일</label>
+            <input type="date" id="endDate" name="endDate" class="form-control" th:value="${album.endDate}" required/>
+        </div>
+
+        <div class="mb-3">
+            <label for="thumbnail" class="form-label">대표 사진</label>
+            <input type="file" id="thumbnail" name="thumbnail" class="form-control"/>
+        </div>
+
+        <div class="mb-3">
+            <label for="content" class="form-label">내용</label>
+            <textarea id="content" name="content" class="form-control" rows="10" required th:text="${album.content}"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">공개 여부</label>
+            <div class="form-check form-check-inline">
+                <input type="radio" id="public" name="isPublic" value="true" class="form-check-input" th:checked="${album.isPublic}"/>
+                <label for="public" class="form-check-label">공개</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio" id="private" name="isPublic" value="false" class="form-check-input" th:checked="${!album.isPublic}"/>
+                <label for="private" class="form-check-label">비공개</label>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="themeInput" class="form-label">테마</label>
+            <input type="text" id="themeInput" class="form-control" placeholder="테마를 입력하고 Enter를 눌러 추가하세요"/>
+            <div id="tagContainer" class="mt-2"></div>
+            <div id="hiddenFieldsContainer" style="display: none;"></div>
+        </div>
+
+        <div class="mb-3 text-center">
+            <button type="submit" class="btn btn-primary">수정 완료</button>
+            <a href="#" class="btn btn-secondary ms-2" th:href="@{/api/travelboards}">취소</a>
+        </div>
+    </form>
+</div>
+</body>
+</html>

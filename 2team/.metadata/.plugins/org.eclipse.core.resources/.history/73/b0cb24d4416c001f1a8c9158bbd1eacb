@@ -1,0 +1,343 @@
+package com.example._team.service;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example._team.dto.SuccessResponseDto;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class TravelBoardController {
+
+    private final TravelBoardService travelBoardService;
+
+    // 모든 여행 보드를 조회
+    @GetMapping("/api/posts")
+    public List<TravelBoardResponseDto> getPosts() {
+        return travelBoardService.getPosts();
+    }
+
+    // 새로운 여행 보드를 생성
+    @PostMapping("/api/post")
+    public TravelBoardResponseDto createPost(@RequestBody TravelBoardRequestsDto requestsDto) {
+        return travelBoardService.createPost(requestsDto);
+    }
+
+    // 특정 여행 보드를 조회 (travelIdx를 통해)
+    @GetMapping("/api/post/{travelIdx}")
+    public TravelBoardResponseDto getPost(@PathVariable Integer travelIdx) {
+        return travelBoardService.getPost(travelIdx);
+    }
+
+    // 이메일을 통해 해당 사용자가 작성한 여행 보드를 조회
+    @GetMapping("/api/posts/email/{email}")
+    public List<TravelBoardResponseDto> getPostsByEmail(@PathVariable String email) {
+        return travelBoardService.getPostsByEmail(email);
+    }
+
+    // 특정 여행 보드를 업데이트
+    @PutMapping("/api/post/{travelIdx}")
+    public TravelBoardResponseDto updatePost(@PathVariable Integer travelIdx, @RequestBody TravelBoardRequestsDto requestsDto) throws Exception {
+        return travelBoardService.updatePost(travelIdx, requestsDto);
+    }
+
+    // 이메일을 통해 해당 사용자가 작성한 여행 보드를 삭제
+    @DeleteMapping("/api/posts/email/{email}")
+    public SuccessResponseDto deletePost(@PathVariable String email) throws Exception {
+        return travelBoardService.deletePostByEmail(email);
+    }
+}
+
+
+
+
+//package com.example._team.service;
+//
+//import java.util.List;
+//
+//import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.dto.SuccessResponseDto;
+//import com.example._team.dto.TravelBoardRequestsDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//import com.example._team.repository.TravelBoardRepository;
+//
+//import lombok.RequiredArgsConstructor;
+//
+//@Service
+//@RequiredArgsConstructor
+//public class TravelBoardService {
+//    
+//    private final TravelBoardRepository travelBoardRepository;
+//
+//    // 모든 여행 보드를 조회하고 최신순으로 정렬
+//    public List<TravelBoardResponseDto> getPosts() {
+//        return travelBoardRepository.findAllByOrderByCreatedAtDesc().stream()
+//            .map(TravelBoardResponseDto::new)
+//            .toList();
+//    }
+//
+//    // 새로운 여행 보드를 생성하고 응답 DTO로 변환
+//    public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+//        TravelBoard travelboard = new TravelBoard();
+//        travelboard.setTitle(requestsDto.getTitle());
+//        travelboard.setContent(requestsDto.getContent());
+//        travelboard.setRegion(requestsDto.getRegion());
+//        travelboard.setStatDate(requestsDto.getStatDate());
+//        travelboard.setEndDate(requestsDto.getEndDate());
+//        travelboard.setIsPublic(requestsDto.getIsPublic());
+//        travelboard.setUserIdx(requestsDto.getUserIdx());
+//        // 이메일은 필요에 따라 저장 또는 사용
+//
+//        travelBoardRepository.save(travelboard);
+//        return new TravelBoardResponseDto(travelboard);
+//    }
+//
+//    // 이메일을 통해 해당 사용자가 작성한 여행 보드를 조회
+//    @Transactional
+//    public List<TravelBoardResponseDto> getPostsByEmail(String email) {
+//        List<TravelBoard> travelBoards = travelBoardRepository.findByUserIdxEmail(email);
+//        if (travelBoards.isEmpty()) {
+//            throw new IllegalArgumentException("해당 이메일로 등록된 여행 보드가 없습니다.");
+//        }
+//        return travelBoards.stream().map(TravelBoardResponseDto::new).toList();
+//    }
+//
+//    // 특정 여행 보드를 조회
+//    @Transactional
+//    public TravelBoardResponseDto getPost(Integer travelIdx) {
+//        return travelBoardRepository.findById(travelIdx)
+//            .map(TravelBoardResponseDto::new)
+//            .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+//    }
+//
+//    // 특정 여행 보드를 업데이트
+//    @Transactional
+//    public TravelBoardResponseDto updatePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//        TravelBoard travelboard = travelBoardRepository.findById(travelIdx)
+//            .orElseThrow(() -> new IllegalAccessError("아이디가 존재하지 않습니다."));
+//        travelboard.setTitle(requestsDto.getTitle());
+//        travelboard.setContent(requestsDto.getContent());
+//        // 필요에 따라 다른 필드 업데이트
+//        travelBoardRepository.save(travelboard);
+//        return new TravelBoardResponseDto(travelboard);    
+//    }
+//
+//    // 특정 여행 보드를 삭제
+//    @Transactional
+//    public SuccessResponseDto deletePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//        TravelBoard travelboard = travelBoardRepository.findById(travelIdx)
+//            .orElseThrow(() -> new IllegalAccessError("아이디가 존재하지 않습니다."));
+//        travelBoardRepository.delete(travelboard);
+//        return new SuccessResponseDto(true);
+//    }
+//}
+
+
+
+
+//package com.example._team.service;
+//
+//import java.util.List;
+//
+//import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.dto.SuccessResponseDto;
+//import com.example._team.dto.TravelBoardRequestsDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//import com.example._team.repository.TravelBoardRepository;
+//
+//import lombok.RequiredArgsConstructor;
+//
+//@Service
+//@RequiredArgsConstructor
+//public class TravelBoardService {
+//    
+//    private final TravelBoardRepository travelBoardRepository;
+//
+//    // 모든 여행 보드를 조회하고 최신순으로 정렬
+//    public List<TravelBoardResponseDto> getPosts() {
+//        return travelBoardRepository.findAllByOrderByCreatedAtDesc().stream()
+//            .map(TravelBoardResponseDto::new)
+//            .toList();
+//    }
+//
+//    // 새로운 여행 보드를 생성하고 응답 DTO로 변환
+//    public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+//        TravelBoard travelboard = new TravelBoard();
+//        travelboard.setTitle(requestsDto.getTitle());
+//        travelboard.setContent(requestsDto.getContent());
+//        travelboard.setRegion(requestsDto.getRegion());
+//        travelboard.setStatDate(requestsDto.getStatDate());
+//        travelboard.setEndDate(requestsDto.getEndDate());
+//        travelboard.setIsPublic(requestsDto.getIsPublic());
+//        travelboard.setUserIdx(requestsDto.getUserIdx());
+//        
+//        travelBoardRepository.save(travelboard);
+//        return new TravelBoardResponseDto(travelboard);
+//    }
+//
+//    // 이메일을 통해 해당 사용자가 작성한 여행 보드를 조회
+//    @Transactional
+//    public List<TravelBoardResponseDto> getPostsByEmail(String email) {
+//        List<TravelBoard> travelBoards = travelBoardRepository.findByUserIdxEmail(email);
+//        if (travelBoards.isEmpty()) {
+//            throw new IllegalArgumentException("해당 이메일로 등록된 여행 보드가 없습니다.");
+//        }
+//        return travelBoards.stream().map(TravelBoardResponseDto::new).toList();
+//    }
+//
+//    // 특정 여행 보드를 조회
+//    @Transactional
+//    public TravelBoardResponseDto getPost(Integer travelIdx) {
+//        return travelBoardRepository.findById(travelIdx)
+//            .map(TravelBoardResponseDto::new)
+//            .orElseThrow(() -> new IllegalArgumentException("아이디가 존재하지 않습니다."));
+//    }
+//
+//    // 특정 여행 보드를 업데이트
+//    @Transactional
+//    public TravelBoardResponseDto updatePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//        TravelBoard travelboard = travelBoardRepository.findById(travelIdx)
+//            .orElseThrow(() -> new IllegalAccessError("아이디가 존재하지 않습니다."));
+//        travelboard.setTitle(requestsDto.getTitle());
+//        travelboard.setContent(requestsDto.getContent());
+//        // 필요에 따라 다른 필드 업데이트
+//        travelBoardRepository.save(travelboard);
+//        return new TravelBoardResponseDto(travelboard);    
+//    }
+//
+//    // 특정 여행 보드를 삭제
+//    @Transactional
+//    public SuccessResponseDto deletePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//        TravelBoard travelboard = travelBoardRepository.findById(travelIdx)
+//            .orElseThrow(() -> new IllegalAccessError("아이디가 존재하지 않습니다."));
+//        travelBoardRepository.delete(travelboard);
+//        return new SuccessResponseDto(true);
+//    }
+//}
+
+
+
+
+//package com.example._team.service;
+//
+//import java.util.List;
+//
+//import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.dto.SuccessResponseDto;
+//import com.example._team.dto.TravelBoardRequestsDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//import com.example._team.repository.TravelBoardRepository;
+//
+//import lombok.RequiredArgsConstructor;
+//
+//@Service
+//@RequiredArgsConstructor
+//public class TravelBoardService {
+//	
+//	private final TravelBoardRepository travelBoardRepository;
+//	
+//	
+//	
+//	public List<TravelBoardResponseDto> getPosts() {
+//		return travelBoardRepository.findAllByOrderByCreatedAtDesc().stream().map(TravelBoardResponseDto::new).toList();
+//	}
+//	
+////	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+////		TravelBoard travelboard = new TravelBoard();
+////		travelboard.setContent(requestsDto.getContent());
+////		
+////		travelBoardRepository.save(travelboard);
+////		return new TravelBoardResponseDto(travelboard);
+////	}
+//	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+//	    TravelBoard travelboard = new TravelBoard();
+//	    travelboard.setTitle(requestsDto.getTitle());
+//	    travelboard.setContent(requestsDto.getContent());
+//	    travelboard.setRegion(requestsDto.getRegion());
+//	    travelboard.setStatDate(requestsDto.getStatDate());
+//	    travelboard.setEndDate(requestsDto.getEndDate());
+//	    travelboard.setIsPublic(requestsDto.getIsPublic());
+//	    travelboard.setUserIdx(requestsDto.getUserIdx());
+//	    
+//	    travelBoardRepository.save(travelboard);
+//	    return new TravelBoardResponseDto(travelboard);
+//	}
+//	
+//	
+////	@Transactional
+////	public TravelBoardResponseDto getPost(Integer userIdx) {
+////		return travelBoardRepository.findById(userIdx).map(TravelBoardResponseDto::new).orElseThrow(
+////				() -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+////		);
+////	}
+////	
+////	@Transactional
+////	public TravelBoardResponseDto updatePost(Integer userIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+////		TravelBoard travelboard = travelBoardRepository.findById(userIdx).orElseThrow(
+////				() -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+////		);
+//////		if (!requestsDto.get().equals(users.get))
+////		
+//////		travelboard.update(requestsDto);
+////		return new TravelBoardResponseDto(travelboard);	
+////	}
+////	
+////	@Transactional
+////	public SuccessResponseDto deletePost(Integer userIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+////		TravelBoard travelboard = travelBoardRepository.findById(userIdx).orElseThrow(
+////				() -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+////		);
+////		
+////		return new SuccessResponseDto(true);
+////	}
+//	
+//	@Transactional
+//	public TravelBoardResponseDto getPost(Integer travelIdx) {
+//	    return travelBoardRepository.findById(travelIdx).map(TravelBoardResponseDto::new).orElseThrow(
+//	            () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+//	    );
+//	}
+//
+//	@Transactional
+//	public TravelBoardResponseDto updatePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//	    TravelBoard travelboard = travelBoardRepository.findById(travelIdx).orElseThrow(
+//	            () -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+//	    );
+//	    travelboard.setTitle(requestsDto.getTitle());
+//	    travelboard.setContent(requestsDto.getContent());
+//	    // 필요한 필드를 업데이트
+//	    travelBoardRepository.save(travelboard);
+//	    return new TravelBoardResponseDto(travelboard);    
+//	}
+//
+//	@Transactional
+//	public SuccessResponseDto deletePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//	    TravelBoard travelboard = travelBoardRepository.findById(travelIdx).orElseThrow(
+//	            () -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+//	    );
+//	    travelBoardRepository.delete(travelboard);
+//	    return new SuccessResponseDto(true);
+//	}
+//
+//
+//}

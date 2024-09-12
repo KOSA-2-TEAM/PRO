@@ -1,0 +1,11 @@
+package com.example._team.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example._team.domain.TravelBoard;
+
+public interface TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
+	List<TravelBoard> findAllByOrderByCreatedAtDesc();
+}

@@ -1,0 +1,876 @@
+// 새로 만든 코드
+package com.example._team.controller;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardDTO;
+import com.example._team.exception.DataNotFoundException;
+import com.example._team.service.TravelBoardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@Controller
+@RequestMapping("/travelboards")
+public class TravelBoardController {
+
+    @Autowired
+    private TravelBoardService travelBoardService;
+
+    // 모든 여행 보드 조회
+    @GetMapping
+    public String getAllBoards(Model model) {
+        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+        model.addAttribute("boards", boards);
+        return "travel-boards/list"; // Thymeleaf 템플릿 경로
+    }
+
+    // 특정 여행 보드 조회 (ID로 식별)
+    @GetMapping("/{travelIdx}")
+    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+        model.addAttribute("board", board);
+        return "travel-boards/detail"; // Thymeleaf 템플릿 경로
+    }
+
+    // 여행 보드 생성 폼
+    @GetMapping("/new")
+    public String createBoardForm(Model model) {
+        model.addAttribute("board", new TravelBoardDTO());
+        return "travel-boards/form"; // Thymeleaf 템플릿 경로
+    }
+
+    // 여행 보드 생성
+    @PostMapping
+    public String createBoard(@ModelAttribute TravelBoardDTO boardDTO) {
+        travelBoardService.createOrUpdateBoard(boardDTO);
+        return "redirect:/travel-boards";
+    }
+
+    // 여행 보드 수정 폼
+    @GetMapping("/{travelIdx}/edit")
+    public String editBoardForm(@PathVariable Integer travelIdx, Model model) {
+        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+        model.addAttribute("board", board);
+        return "travel-boards/form"; // Thymeleaf 템플릿 경로
+    }
+
+    // 여행 보드 수정
+    @PostMapping("/{travelIdx}")
+    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoardDTO boardDTO) {
+        boardDTO.setTravelIdx(travelIdx);
+        travelBoardService.updateBoard(travelIdx, boardDTO);
+        return "redirect:/travel-boards";
+    }
+
+    // 여행 보드 삭제
+    @PostMapping("/{travelIdx}/delete")
+    public String deleteBoard(@PathVariable Integer travelIdx) {
+        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+        return "redirect:/travel-boards";
+    }
+}
+
+
+
+
+
+
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.dto.TravelBoardDTO;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//
+//@RestController // HTML 대신 JSON 응답을 반환
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    // 모든 여행 보드를 조회하여 JSON 응답
+//    @GetMapping
+//    public ResponseEntity<List<TravelBoardDTO>> getAllBoards() {
+//        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+//        return ResponseEntity.ok(boards);
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 JSON 응답
+//    @GetMapping("/{travelIdx}")
+//    public ResponseEntity<TravelBoardDTO> getBoardByTravelIdx(@PathVariable Integer travelIdx) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        return ResponseEntity.ok(board);
+//    }
+//
+//    // 여행 보드 생성 처리
+//    @PostMapping
+//    public ResponseEntity<TravelBoardDTO> createBoard(@RequestBody TravelBoardDTO board) {
+//        TravelBoardDTO createdBoard = travelBoardService.createOrUpdateBoard(board);
+//        return ResponseEntity.ok(createdBoard);
+//    }
+//
+//    // 여행 보드 수정 처리
+//    @PutMapping("/{travelIdx}")
+//    public ResponseEntity<TravelBoardDTO> updateBoard(@PathVariable Integer travelIdx, @RequestBody TravelBoardDTO board) {
+//        board.setTravelIdx(travelIdx);
+//        TravelBoardDTO updatedBoard = travelBoardService.updateBoard(travelIdx, board);
+//        return ResponseEntity.ok(updatedBoard);
+//    }
+//
+//    // 여행 보드 삭제 처리
+//    @DeleteMapping("/{travelIdx}")
+//    public ResponseEntity<Void> deleteBoard(@PathVariable Integer travelIdx) {
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        return ResponseEntity.noContent().build();
+//    }
+//}
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.dto.TravelBoardDTO;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    // 모든 여행 보드를 조회하여 리스트 뷰에 전달
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 상세 뷰에 전달
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/detail"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 폼을 사용자에게 보여줌
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoardDTO());
+//        return "travel-boards/create"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 처리 및 성공 메시지 리다이렉트
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        // 생성된 보드 정보를 저장
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 수정 폼을 사용자에게 보여줌
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/edit"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 수정 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        // 기존 travelIdx를 설정해줘야 수정이 제대로 이루어짐
+//        board.setTravelIdx(travelIdx);
+//        travelBoardService.updateBoard(travelIdx, board);
+//        redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//        return "redirect:/travel-boards"; // 수정 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 삭제 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.dto.TravelBoardDTO;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    // 모든 여행 보드를 조회하여 리스트 뷰에 전달
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 상세 뷰에 전달
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/detail"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 폼을 사용자에게 보여줌
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoardDTO());
+//        return "travel-boards/create"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 처리 및 성공 메시지 리다이렉트
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        // 생성된 보드 정보를 저장
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 수정 폼을 사용자에게 보여줌
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/edit"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 수정 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        // 기존 travelIdx를 설정해줘야 수정이 제대로 이루어짐
+//        board.setTravelIdx(travelIdx);
+//        travelBoardService.updateBoard(travelIdx, board);
+//        redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//        return "redirect:/travel-boards"; // 수정 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 삭제 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.dto.TravelBoardDTO;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    // 모든 여행 보드를 조회하여 리스트 뷰에 전달
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 상세 뷰에 전달
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/detail"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 폼을 사용자에게 보여줌
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoardDTO());
+//        return "travel-boards/create"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 처리 및 성공 메시지 리다이렉트
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 수정 폼을 사용자에게 보여줌
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/edit"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 수정 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.updateBoard(travelIdx, board);
+//        redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//        return "redirect:/travel-boards"; // 수정 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 삭제 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.dto.TravelBoardDTO;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.mapper.TravelBoardMapper;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    @Autowired
+//    private TravelBoardMapper travelBoardMapper;
+//
+//    // 모든 여행 보드를 조회하여 리스트 뷰에 전달
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoardDTO> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 상세 뷰에 전달
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/detail"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 폼을 사용자에게 보여줌
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoardDTO());
+//        return "travel-boards/create"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 처리 및 성공 메시지 리다이렉트
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 수정 폼을 사용자에게 보여줌
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        TravelBoardDTO board = travelBoardService.getBoardByTravelIdx(travelIdx)
+//                .orElseThrow(() -> new DataNotFoundException("Travel board not found with ID: " + travelIdx));
+//        model.addAttribute("board", board);
+//        return "travel-boards/edit"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 수정 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoardDTO board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.updateBoard(travelIdx, board);
+//        redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//        return "redirect:/travel-boards"; // 수정 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 삭제 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+
+// dto, mapper 추가 전 코드
+//package com.example._team.controller;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    // 모든 여행 보드를 조회하여 리스트 뷰에 전달
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoard> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 특정 여행 보드 조회 (ID로 식별) 및 상세 뷰에 전달
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/detail"; // 타임리프 템플릿 경로
+//        } else {
+//            model.addAttribute("error", "Board not found");
+//            return "travel-boards/not-found"; // 타임리프 템플릿 경로 (존재하지 않을 때)
+//        }
+//    }
+//
+//    // 여행 보드 생성 폼을 사용자에게 보여줌
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoard());
+//        return "travel-boards/create"; // 타임리프 템플릿 경로
+//    }
+//
+//    // 여행 보드 생성 처리 및 성공 메시지 리다이렉트
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoard board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    // 여행 보드 수정 폼을 사용자에게 보여줌
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/edit"; // 타임리프 템플릿 경로
+//        } else {
+//            model.addAttribute("error", "Board not found");
+//            return "travel-boards/not-found"; // 타임리프 템플릿 경로 (존재하지 않을 때)
+//        }
+//    }
+//
+//    // 여행 보드 수정 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoard board, RedirectAttributes redirectAttributes) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            board.setTravelIdx(travelIdx); // 수정하려는 보드의 ID 설정
+//            travelBoardService.createOrUpdateBoard(board);
+//            redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//            return "redirect:/travel-boards"; // 수정 후 리다이렉트 경로
+//        } else {
+//            redirectAttributes.addFlashAttribute("error", "Board not found");
+//            return "redirect:/travel-boards/not-found"; // 수정하려는 보드가 없을 때 리다이렉트 경로
+//        }
+//    }
+//
+//    // 여행 보드 삭제 처리 및 성공 메시지 리다이렉트
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//            redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        } else {
+//            redirectAttributes.addFlashAttribute("error", "Board not found");
+//        }
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+// 주석 설명 추가 전 코드
+//package com.example._team.controller;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoard> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list";
+//    }
+//
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/detail";
+//        } else {
+//            model.addAttribute("error", "Board not found");
+//            return "travel-boards/not-found";
+//        }
+//    }
+//
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoard());
+//        return "travel-boards/create";
+//    }
+//
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoard board, RedirectAttributes redirectAttributes) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        redirectAttributes.addFlashAttribute("message", "Board created successfully");
+//        return "redirect:/travel-boards";
+//    }
+//
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/edit";
+//        } else {
+//            model.addAttribute("error", "Board not found");
+//            return "travel-boards/not-found";
+//        }
+//    }
+//
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoard board, RedirectAttributes redirectAttributes) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            board.setTravelIdx(travelIdx);
+//            travelBoardService.createOrUpdateBoard(board);
+//            redirectAttributes.addFlashAttribute("message", "Board updated successfully");
+//            return "redirect:/travel-boards";
+//        } else {
+//            redirectAttributes.addFlashAttribute("error", "Board not found");
+//            return "redirect:/travel-boards/not-found";
+//        }
+//    }
+//
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx, RedirectAttributes redirectAttributes) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//            redirectAttributes.addFlashAttribute("message", "Board deleted successfully");
+//        } else {
+//            redirectAttributes.addFlashAttribute("error", "Board not found");
+//        }
+//        return "redirect:/travel-boards";
+//    }
+//}
+
+// controller 합치기 전 코드
+//package com.example._team.controller;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoard> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list";
+//    }
+//
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/detail";
+//        } else {
+//            return "travel-boards/not-found";
+//        }
+//    }
+//
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoard());
+//        return "travel-boards/create";
+//    }
+//
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoard board) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        return "redirect:/travel-boards";
+//    }
+//
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/edit";
+//        } else {
+//            return "travel-boards/not-found";
+//        }
+//    }
+//
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoard board) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            board.setTravelIdx(travelIdx);
+//            travelBoardService.createOrUpdateBoard(board);
+//            return "redirect:/travel-boards";
+//        } else {
+//            return "travel-boards/not-found";
+//        }
+//    }
+//
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        }
+//        return "redirect:/travel-boards";
+//    }
+//}
+
+
+// 타임리프 적용
+//package com.example._team.controller;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.ui.Model;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Controller
+//@RequestMapping("/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    @GetMapping
+//    public String getAllBoards(Model model) {
+//        List<TravelBoard> boards = travelBoardService.getAllBoards();
+//        model.addAttribute("boards", boards);
+//        return "travel-boards/list"; // 타임리프 템플릿 파일 경로
+//    }
+//
+//    @GetMapping("/{travelIdx}")
+//    public String getBoardByTravelIdx(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/detail"; // 타임리프 템플릿 파일 경로
+//        } else {
+//            return "travel-boards/not-found"; // 타임리프 템플릿 파일 경로 (존재하지 않을 때)
+//        }
+//    }
+//
+//    @GetMapping("/create")
+//    public String showCreateForm(Model model) {
+//        model.addAttribute("board", new TravelBoard());
+//        return "travel-boards/create"; // 타임리프 템플릿 파일 경로
+//    }
+//
+//    @PostMapping
+//    public String createBoard(@ModelAttribute TravelBoard board) {
+//        travelBoardService.createOrUpdateBoard(board);
+//        return "redirect:/travel-boards"; // 생성 후 리다이렉트 경로
+//    }
+//
+//    @GetMapping("/edit/{travelIdx}")
+//    public String showEditForm(@PathVariable Integer travelIdx, Model model) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        if (board.isPresent()) {
+//            model.addAttribute("board", board.get());
+//            return "travel-boards/edit"; // 타임리프 템플릿 파일 경로
+//        } else {
+//            return "travel-boards/not-found"; // 타임리프 템플릿 파일 경로 (존재하지 않을 때)
+//        }
+//    }
+//
+//    @PostMapping("/update/{travelIdx}")
+//    public String updateBoard(@PathVariable Integer travelIdx, @ModelAttribute TravelBoard board) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            board.setTravelIdx(travelIdx);
+//            travelBoardService.createOrUpdateBoard(board);
+//            return "redirect:/travel-boards";
+//        } else {
+//            return "travel-boards/not-found"; // 타임리프 템플릿 파일 경로 (존재하지 않을 때)
+//        }
+//    }
+//
+//    @PostMapping("/delete/{travelIdx}")
+//    public String deleteBoard(@PathVariable Integer travelIdx) {
+//        if (travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        }
+//        return "redirect:/travel-boards"; // 삭제 후 리다이렉트 경로
+//    }
+//}
+
+
+//package com.example._team.controller;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.*;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@RestController
+//@RequestMapping("/api/travel-boards")
+//public class TravelBoardController {
+//
+//    @Autowired
+//    private TravelBoardService travelBoardService;
+//
+//    @GetMapping
+//    public ResponseEntity<List<TravelBoard>> getAllBoards() {
+//        List<TravelBoard> boards = travelBoardService.getAllBoards();
+//        return new ResponseEntity<>(boards, HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/{travelIdx}")
+//    public ResponseEntity<TravelBoard> getBoardByTravelIdx(@PathVariable Integer travelIdx) {
+//        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+//        return board.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+//    }
+//
+//    @PostMapping
+//    public ResponseEntity<TravelBoard> createBoard(@RequestBody TravelBoard board) {
+//        TravelBoard createdBoard = travelBoardService.createOrUpdateBoard(board);
+//        return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
+//    }
+//
+//    @PutMapping("/{travelIdx}")
+//    public ResponseEntity<TravelBoard> updateBoard(@PathVariable Integer travelIdx, @RequestBody TravelBoard board) {
+//        if (!travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        board.setTravelIdx(travelIdx);
+//        TravelBoard updatedBoard = travelBoardService.createOrUpdateBoard(board);
+//        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+//    }
+//
+//    @DeleteMapping("/{travelIdx}")
+//    public ResponseEntity<Void> deleteBoard(@PathVariable Integer travelIdx) {
+//        if (!travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+//            return ResponseEntity.notFound().build();
+//        }
+//        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+//        return ResponseEntity.noContent().build();
+//    }
+//}

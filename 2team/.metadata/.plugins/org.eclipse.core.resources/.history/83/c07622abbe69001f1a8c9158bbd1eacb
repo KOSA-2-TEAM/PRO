@@ -1,0 +1,56 @@
+package com.example._team.controller;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.service.TravelBoardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/travel-boards")
+public class TravelBoardController {
+
+    @Autowired
+    private TravelBoardService travelBoardService;
+
+    @GetMapping
+    public ResponseEntity<List<TravelBoard>> getAllBoards() {
+        List<TravelBoard> boards = travelBoardService.getAllBoards();
+        return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TravelBoard> getBoardById(@PathVariable Integer id) {
+        Optional<TravelBoard> board = travelBoardService.getBoardById(id);
+        return board.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<TravelBoard> createBoard(@RequestBody TravelBoard board) {
+        TravelBoard createdBoard = travelBoardService.createOrUpdateBoard(board);
+        return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TravelBoard> updateBoard(@PathVariable Integer id, @RequestBody TravelBoard board) {
+        if (!travelBoardService.getBoardById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        board.setTravelIdx(id); 
+        TravelBoard updatedBoard = travelBoardService.createOrUpdateBoard(board);
+        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBoard(@PathVariable Integer id) {
+        if (!travelBoardService.getBoardById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        travelBoardService.deleteBoard(id);
+        return ResponseEntity.noContent().build();
+    }
+}

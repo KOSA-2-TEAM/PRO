@@ -1,0 +1,41 @@
+spring:
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: zoown99@gmail.com
+      password: wzuo voqh inih bdkz
+      properties:
+        mail:
+          smtp:
+            auth: true
+            starttls:
+              enable: true
+              required: true
+            connectiontimeout: 5000
+            timeout: 5000
+            writetimeout: 5000
+    datasource:
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      url: jdbc:oracle:thin:@localhost:1521:xe
+      username: kingsmile
+      password: oracle
+    jpa:
+      show-sql: true
+      hibernate:
+        ddl-auto: create
+        database: oracle
+        show-sql: true
+server:
+    port: 8081
+cloud:
+  aws:
+    s3:
+      bucket: 2team-bucket
+    credentials:
+      secret-key: JHdi/2mN76tZsCwpDg1lt3SXuZx8Lz2a/PgGU55l
+      access-key: AKIAQWHCPWCRECSPBKWT
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

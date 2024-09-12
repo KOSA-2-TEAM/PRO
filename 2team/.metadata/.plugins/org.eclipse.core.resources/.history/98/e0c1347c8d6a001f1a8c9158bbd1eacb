@@ -1,0 +1,147 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.repository.TravelBoardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TravelBoardService {
+
+    @Autowired
+    private TravelBoardRepository travelBoardRepository;
+
+    // 모든 여행 보드 조회
+    public List<TravelBoard> getAllBoards() {
+        return travelBoardRepository.findAll();
+    }
+
+    // 특정 여행 보드 조회 (ID로 식별)
+    public Optional<TravelBoard> getBoardByTravelIdx(Integer travelIdx) {
+        return travelBoardRepository.findByTravelIdx(travelIdx);
+    }
+
+    // 여행 보드 생성 또는 수정
+    public TravelBoard createOrUpdateBoard(TravelBoard board) {
+        return travelBoardRepository.save(board);
+    }
+
+    // 특정 여행 보드 삭제
+    public void deleteBoardByTravelIdx(Integer travelIdx) {
+        travelBoardRepository.findByTravelIdx(travelIdx)
+            .ifPresent(board -> travelBoardRepository.deleteById(board.getTravelIdx()));
+    }
+}
+
+
+// 주석 설명 전 코드
+//package com.example._team.service;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.repository.TravelBoardRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Service
+//public class TravelBoardService {
+//
+//    @Autowired
+//    private TravelBoardRepository travelBoardRepository;
+//
+//    public List<TravelBoard> getAllBoards() {
+//        return travelBoardRepository.findAll();
+//    }
+//
+//    public Optional<TravelBoard> getBoardByTravelIdx(Integer travelIdx) {
+//        return travelBoardRepository.findByTravelIdx(travelIdx);
+//    }
+//
+//    public TravelBoard createOrUpdateBoard(TravelBoard board) {
+//        return travelBoardRepository.save(board);
+//    }
+//
+//    public void deleteBoardByTravelIdx(Integer travelIdx) {
+//        travelBoardRepository.findByTravelIdx(travelIdx)
+//            .ifPresent(board -> travelBoardRepository.deleteById(board.getTravelIdx()));
+//    }
+//}
+
+// service 합치기 전 코드
+//package com.example._team.service;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.repository.TravelBoardRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Service
+//public class TravelBoardService {
+//
+//    @Autowired
+//    private TravelBoardRepository travelBoardRepository;
+//
+//    public List<TravelBoard> getAllBoards() {
+//        return travelBoardRepository.findAll();
+//    }
+//
+//    public Optional<TravelBoard> getBoardByTravelIdx(Integer travelIdx) {
+//        return travelBoardRepository.findByTravelIdx(travelIdx);
+//    }
+//
+//    public TravelBoard createOrUpdateBoard(TravelBoard board) {
+//        return travelBoardRepository.save(board);
+//    }
+//
+//    public void deleteBoardByTravelIdx(Integer travelIdx) {
+//        travelBoardRepository.findByTravelIdx(travelIdx)
+//            .ifPresent(board -> travelBoardRepository.deleteById(board.getTravelIdx()));
+//    }
+//}
+
+
+//package com.example._team.service;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.repository.TravelBoardRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.List;
+//import java.util.Optional;
+//
+//@Service
+//public class TravelBoardService {
+//
+//    @Autowired
+//    private TravelBoardRepository travelBoardRepository;
+//
+//    // 모든 여행 보드 조회
+//    public List<TravelBoard> getAllBoards() {
+//        return travelBoardRepository.findAll();
+//    }
+//
+//    // travelIdx로 여행 보드 조회
+//    public Optional<TravelBoard> getBoardByTravelIdx(Integer travelIdx) {
+//        return travelBoardRepository.findByTravelIdx(travelIdx);
+//    }
+//
+//    // 여행 보드 생성 또는 수정
+//    public TravelBoard createOrUpdateBoard(TravelBoard board) {
+//        return travelBoardRepository.save(board);
+//    }
+//
+//    // travelIdx로 여행 보드 삭제
+//    public void deleteBoardByTravelIdx(Integer travelIdx) {
+//        travelBoardRepository.findByTravelIdx(travelIdx)
+//            .ifPresent(board -> travelBoardRepository.deleteById(board.getTravelIdx()));
+//    }
+//}

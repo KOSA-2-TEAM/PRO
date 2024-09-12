@@ -1,0 +1,56 @@
+package com.example._team.controller;
+
+import com.example._team.domain.TravelAlbum;
+import com.example._team.service.TravelAlbumService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/travel-albums")
+public class TravelAlbumController {
+
+    @Autowired
+    private TravelAlbumService travelAlbumService;
+
+    @GetMapping
+    public ResponseEntity<List<TravelAlbum>> getAllAlbums() {
+        List<TravelAlbum> albums = travelAlbumService.getAllAlbums();
+        return new ResponseEntity<>(albums, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TravelAlbum> getAlbumById(@PathVariable Integer id) {
+        Optional<TravelAlbum> album = travelAlbumService.getAlbumById(id);
+        return album.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<TravelAlbum> createAlbum(@RequestBody TravelAlbum album) {
+        TravelAlbum createdAlbum = travelAlbumService.createOrUpdateAlbum(album);
+        return new ResponseEntity<>(createdAlbum, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TravelAlbum> updateAlbum(@PathVariable Integer id, @RequestBody TravelAlbum album) {
+        if (!travelAlbumService.getAlbumById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        album.setAlbumIdx(id);
+        TravelAlbum updatedAlbum = travelAlbumService.createOrUpdateAlbum(album);
+        return new ResponseEntity<>(updatedAlbum, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAlbum(@PathVariable Integer id) {
+        if (!travelAlbumService.getAlbumById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        travelAlbumService.deleteAlbum(id);
+        return ResponseEntity.noContent().build();
+    }
+}

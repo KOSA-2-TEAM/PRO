@@ -1,0 +1,56 @@
+package com.example._team.controller;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.service.TravelBoardService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/travel-boards")
+public class TravelBoardController {
+
+    @Autowired
+    private TravelBoardService travelBoardService;
+
+    @GetMapping
+    public ResponseEntity<List<TravelBoard>> getAllBoards() {
+        List<TravelBoard> boards = travelBoardService.getAllBoards();
+        return new ResponseEntity<>(boards, HttpStatus.OK);
+    }
+
+    @GetMapping("/{travelIdx}")
+    public ResponseEntity<TravelBoard> getBoardByTravelIdx(@PathVariable Integer travelIdx) {
+        Optional<TravelBoard> board = travelBoardService.getBoardByTravelIdx(travelIdx);
+        return board.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @PostMapping
+    public ResponseEntity<TravelBoard> createBoard(@RequestBody TravelBoard board) {
+        TravelBoard createdBoard = travelBoardService.createOrUpdateBoard(board);
+        return new ResponseEntity<>(createdBoard, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{travelIdx}")
+    public ResponseEntity<TravelBoard> updateBoard(@PathVariable Integer travelIdx, @RequestBody TravelBoard board) {
+        if (!travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        board.setTravelIdx(travelIdx);
+        TravelBoard updatedBoard = travelBoardService.createOrUpdateBoard(board);
+        return new ResponseEntity<>(updatedBoard, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{travelIdx}")
+    public ResponseEntity<Void> deleteBoard(@PathVariable Integer travelIdx) {
+        if (!travelBoardService.getBoardByTravelIdx(travelIdx).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        travelBoardService.deleteBoardByTravelIdx(travelIdx);
+        return ResponseEntity.noContent().build();
+    }
+}

@@ -1,0 +1,71 @@
+package com.example._team.dto;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.domain.Users;
+import com.example._team.domain.enums.Region;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Getter
+@NoArgsConstructor
+public class TravelBoardRequestDto {
+
+    private String title;
+    private String content;
+    private Region region;
+    private LocalDateTime statDate;
+    private LocalDateTime endDate;
+    private Integer isPublic;
+    private Integer userIdx; // Use Integer instead of Long
+
+    @Builder
+    public TravelBoardRequestDto(String title, String content, Region region, LocalDateTime statDate, LocalDateTime endDate, Integer isPublic, Integer userIdx) {
+        this.title = title;
+        this.content = content;
+        this.region = region;
+        this.statDate = statDate;
+        this.endDate = endDate;
+        this.isPublic = isPublic;
+        this.userIdx = userIdx;
+    }
+
+    // Optional: Convert DTO to Entity
+    public TravelBoard toEntity(Users user) {
+        return TravelBoard.builder()
+                .title(this.title)
+                .content(this.content)
+                .region(this.region)
+                .statDate(this.statDate)
+                .endDate(this.endDate)
+                .isPublic(this.isPublic)
+                .userIdx(user)
+                .build();
+    }
+}
+
+
+//package com.example._team.dto;
+//
+//import java.time.LocalDateTime;
+//
+//import com.example._team.domain.enums.Region;
+//
+//import lombok.Getter;
+//import lombok.NoArgsConstructor;
+//
+//@Getter
+//@NoArgsConstructor
+//public class TravelBoardRequestDto {
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx;
+//    
+//    
+//}

@@ -1,0 +1,72 @@
+package com.example._team.dto;
+
+import com.example._team.domain.enums.Region;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+public class TravelBoardResponseDto {
+    private String title;
+    private Region region;
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private String content;
+    private String theme;
+    private Integer isPublic;
+    
+ // 생성자 정의
+    public TravelBoardResponseDto(String title, Region region, LocalDateTime statDate, LocalDateTime endDate, String content, Integer isPublic) {
+        this.title = title;
+        this.region = region;
+        this.startDate = statDate;
+        this.endDate = endDate;
+        this.content = content;
+        this.isPublic = isPublic;
+    }
+}
+
+
+
+// 11111
+//package com.example._team.dto;
+//
+//import java.time.LocalDateTime;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.domain.Users;
+//import com.example._team.domain.enums.Region;
+//
+//import lombok.AllArgsConstructor;
+//import lombok.Getter;
+//import lombok.NoArgsConstructor;
+//
+//@Getter
+//@NoArgsConstructor
+//@AllArgsConstructor
+//public class TravelBoardResponseDto {
+//	private Users userIdx;
+//	private String title;
+//	private String content;
+//	private Region region;
+//	private LocalDateTime statDate;
+//	private LocalDateTime endDate;
+//	private Integer isPublic;
+//	private LocalDateTime createdAt;
+//	private LocalDateTime updatedAt;
+//	private String email;
+//	
+//	public TravelBoardResponseDto(TravelBoard travelBoard) {
+//		this.userIdx = travelBoard.getUserIdx();
+//		this.title = travelBoard.getTitle();
+//		this.content = travelBoard.getContent();
+//		this.region = travelBoard.getRegion();
+//		this.statDate = travelBoard.getStatDate();
+//		this.endDate = travelBoard.getEndDate();
+//		this.isPublic = travelBoard.getIsPublic();
+//		this.createdAt = travelBoard.getCreatedAt();
+//		this.updatedAt = travelBoard.getUpdatedAt();
+//	}
+//}

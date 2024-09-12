@@ -1,0 +1,40 @@
+package com.example._team.service;
+
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+
+import java.util.List;
+
+public interface TravelBoardService {
+    TravelBoardResponseDto createTravelBoard(TravelBoardRequestDto requestDto);
+    TravelBoardResponseDto getTravelBoard(Integer id);
+    List<TravelBoardResponseDto> getAllTravelBoards();
+    TravelBoardResponseDto updateTravelBoard(Integer id, TravelBoardRequestDto requestDto);
+    void deleteTravelBoard(Integer id);
+}
+
+
+//package com.example._team.service;
+//
+//import com.example._team.dto.TravelBoardRequestDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//
+//import java.util.List;
+//
+//public interface TravelBoardService {
+//
+//    // 여행 보드 작성
+//    void saveTravelBoard(TravelBoardRequestDto travelBoardDto);
+//
+//    // 여행 보드 수정
+//    void update(Integer id, TravelBoardRequestDto dto);
+//
+//    // 여행 보드 삭제
+//    void deleteTravelBoard(Integer id);
+//
+//    // 여행 보드 상세 조회
+//    TravelBoardResponseDto getTravelBoard(Integer id);
+//
+//    // 여행 보드 리스트 조회
+//    List<TravelBoardResponseDto> getTravelBoardList();
+//}

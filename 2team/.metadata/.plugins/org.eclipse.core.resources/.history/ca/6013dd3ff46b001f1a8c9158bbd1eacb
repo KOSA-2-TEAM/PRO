@@ -1,0 +1,14 @@
+package com.example._team.service;
+
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+
+import java.util.List;
+
+public interface TravelBoardService {
+    List<TravelBoardResponseDto> getAllTravelBoards();
+    TravelBoardResponseDto getTravelBoardById(Integer id);
+    void createTravelBoard(TravelBoardRequestDto travelBoardRequestsDto);
+    void updateTravelBoard(Integer id, TravelBoardRequestDto travelBoardRequestsDto);
+    void deleteTravelBoard(Integer id);
+}

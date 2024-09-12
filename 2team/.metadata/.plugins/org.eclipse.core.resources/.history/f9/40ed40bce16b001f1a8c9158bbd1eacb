@@ -1,0 +1,234 @@
+package com.example._team.dto;
+
+import com.example._team.domain.Users;
+import com.example._team.domain.enums.Region;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TravelBoardDTO {
+    private Integer travelIdx;
+    private String title;
+    private String content;
+    private Region region; // 수정
+    private LocalDateTime statDate;
+    private LocalDateTime endDate;
+    private Integer isPublic;
+    private Users userIdx; // 수정
+}
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//
+//import jakarta.validation.constraints.NotNull;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//
+//    @NotNull(message = "Title cannot be null")
+//    private String title;
+//
+//    @NotNull(message = "Content cannot be null")
+//    private String content;
+//
+//    @NotNull(message = "Region cannot be null")
+//    private Region region;
+//
+//    @NotNull(message = "Start date cannot be null")
+//    private LocalDateTime statDate;
+//
+//    @NotNull(message = "End date cannot be null")
+//    private LocalDateTime endDate;
+//
+//    @NotNull(message = "Public status cannot be null")
+//    private Integer isPublic;
+//
+//    @NotNull(message = "User ID cannot be null")
+//    private Integer userIdx;
+//}
+
+
+//package com.example._team.dto;
+//
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private LocalDateTime createdAt;
+//    private LocalDateTime updatedAt;
+//}
+
+
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // 사용자 ID
+//}
+
+
+
+
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // 사용자의 ID
+//}
+
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // 사용자의 ID
+//}
+
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // 사용자의 ID
+//    private Integer likesCount; // 좋아요 수
+//}
+
+
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // Assume userIdx is included for simplicity
+//    private Integer likesCount; // 좋아요 수
+//}
+
+
+
+// 좋아요 추가 전 코드
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // Assume userIdx is included for simplicity
+//}

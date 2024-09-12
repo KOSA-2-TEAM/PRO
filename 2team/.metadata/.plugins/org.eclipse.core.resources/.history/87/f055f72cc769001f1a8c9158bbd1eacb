@@ -1,0 +1,32 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.repository.TravelBoardRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TravelBoardService {
+
+    @Autowired
+    private TravelBoardRepository travelBoardRepository;
+
+    public List<TravelBoard> getAllBoards() {
+        return travelBoardRepository.findAll();
+    }
+
+    public Optional<TravelBoard> getBoardById(Integer id) {
+        return travelBoardRepository.findById(id);
+    }
+
+    public TravelBoard createOrUpdateBoard(TravelBoard board) {
+        return travelBoardRepository.save(board);
+    }
+
+    public void deleteBoard(Integer id) {
+        travelBoardRepository.deleteById(id);
+    }
+}

@@ -1,0 +1,129 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.domain.Users;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.repository.TravelBoardRepository;
+import com.example._team.repository.UsersRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class TravelBoardServiceImpl implements TravelBoardService {
+
+    private final TravelBoardRepository travelBoardRepository;
+    private final UsersRepository usersRepository;
+
+    public TravelBoardServiceImpl(TravelBoardRepository travelBoardRepository, UsersRepository usersRepository) {
+        this.travelBoardRepository = travelBoardRepository;
+        this.usersRepository = usersRepository;
+    }
+
+    @Override
+    public void createTravelBoard(TravelBoardRequestsDto dto, String userEmail) {
+        Users user = usersRepository.findByEmail(userEmail);
+
+        // Setter를 이용한 TravelBoard 생성
+        TravelBoard travelBoard = new TravelBoard();
+        travelBoard.setTitle(dto.getTitle());
+        travelBoard.setContent(dto.getContent());
+        travelBoard.setRegion(dto.getRegion());
+        travelBoard.setStatDate(dto.getStartDate());
+        travelBoard.setEndDate(dto.getEndDate());
+        travelBoard.setIsPublic(dto.getIsPublic());
+        travelBoard.setUserIdx(user); // 유저 설정
+
+        travelBoardRepository.save(travelBoard);
+    }
+
+    @Override
+    public void updateTravelBoard(Integer travelIdx, TravelBoardRequestsDto dto) {
+        TravelBoard travelBoard = travelBoardRepository.findById(travelIdx)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid travelIdx"));
+
+        travelBoard.setTitle(dto.getTitle());
+        travelBoard.setRegion(dto.getRegion());
+        travelBoard.setStatDate(dto.getStartDate());  // 오타 수정 (StatDate -> StartDate)
+        travelBoard.setEndDate(dto.getEndDate());
+        travelBoard.setContent(dto.getContent());
+        travelBoard.setIsPublic(dto.getIsPublic());
+
+        travelBoardRepository.save(travelBoard);
+    }
+
+    @Override
+    public void deleteTravelBoardByEmail(String email) {
+        travelBoardRepository.deleteByUserIdx_Email(email);
+    }
+
+    @Override
+    public List<TravelBoardResponseDto> getTravelBoardsByEmail(String email) {
+        return travelBoardRepository.findByUserIdx_Email(email)
+                .stream()
+                .map(board -> new TravelBoardResponseDto(board.getTitle(), board.getRegion(), board.getStartDate(), board.getEndDate(), board.getContent(), board.getIsPublic()))
+                .collect(Collectors.toList());
+    }
+}
+
+
+
+//package com.example._team.service;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.domain.Users;
+//import com.example._team.dto.TravelBoardRequestsDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//import com.example._team.repository.TravelBoardRepository;
+//import com.example._team.repository.UsersRepository;
+//import com.example._team.service.TravelBoardService;
+//import org.springframework.stereotype.Service;
+//
+//import java.util.List;
+//import java.util.stream.Collectors;
+//
+//@Service
+//public class TravelBoardServiceImpl implements TravelBoardService {
+//
+//    private final TravelBoardRepository travelBoardRepository;
+//    private final UsersRepository usersRepository;
+//
+//    public TravelBoardServiceImpl(TravelBoardRepository travelBoardRepository, UsersRepository usersRepository) {
+//        this.travelBoardRepository = travelBoardRepository;
+//        this.usersRepository = usersRepository;
+//    }
+//
+//    @Override
+//    public void createTravelBoard(TravelBoardRequestsDto dto, String userEmail) {
+//        Users user = usersRepository.findByEmail(userEmail);
+//        TravelBoard travelBoard = new TravelBoard(dto.getTitle(), dto.getContent(), dto.getRegion(), dto.getStartDate(), dto.getEndDate(), dto.getIsPublic(), user);
+//        travelBoardRepository.save(travelBoard);
+//    }
+//
+//    @Override
+//    public void updateTravelBoard(Integer travelIdx, TravelBoardRequestsDto dto) {
+//        TravelBoard travelBoard = travelBoardRepository.findById(travelIdx).orElseThrow(() -> new IllegalArgumentException("Invalid travelIdx"));
+//        travelBoard.setTitle(dto.getTitle());
+//        travelBoard.setRegion(dto.getRegion());
+//        travelBoard.setStatDate(dto.getStartDate());
+//        travelBoard.setEndDate(dto.getEndDate());
+//        travelBoard.setContent(dto.getContent());
+//        travelBoard.setIsPublic(dto.getIsPublic());
+//        travelBoardRepository.save(travelBoard);
+//    }
+//
+//    @Override
+//    public void deleteTravelBoardByEmail(String email) {
+//        travelBoardRepository.deleteByUserIdx_Email(email);
+//    }
+//
+//    @Override
+//    public List<TravelBoardResponseDto> getTravelBoardsByEmail(String email) {
+//        return travelBoardRepository.findByUserIdx_Email(email)
+//                .stream()
+//                .map(board -> new TravelBoardResponseDto(board.getTitle(), board.getRegion(), board.getStartDate(), board.getEndDate(), board.getContent(), board.getIsPublic()))
+//                .collect(Collectors.toList());
+//    }
+//}

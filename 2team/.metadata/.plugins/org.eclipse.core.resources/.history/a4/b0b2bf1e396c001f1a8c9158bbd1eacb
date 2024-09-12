@@ -1,0 +1,50 @@
+package com.example._team.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example._team.dto.SuccessResponseDto;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.service.TravelBoardService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class TravelBoardController {
+
+    private final TravelBoardService travelBoardService;
+    
+    @GetMapping("/api/posts")
+    public List<TravelBoardResponseDto> getPosts() {
+    	return travelBoardService.getPosts();
+    }
+    
+    @PostMapping("/api/post")
+    public TravelBoardResponseDto createPost(@RequestBody TravelBoardRequestsDto requestsDto) {
+    	return travelBoardService.createPost(requestsDto);
+    }
+
+    @GetMapping("/api/post/{id}")
+    public TravelBoardResponseDto getPost(@PathVariable Integer userIdx) {
+    	return travelBoardService.getPost(userIdx);
+    }
+    
+    @PutMapping("/api/post/{id}")
+    public TravelBoardResponseDto updatePost(@PathVariable Integer userIdx, @RequestBody TravelBoardRequestsDto requestsDto) throws Exception {
+    	return travelBoardService.updatePost(userIdx, requestsDto);
+    }
+    
+    @DeleteMapping("/api/post/{id}")
+    public SuccessResponseDto deletePost(@PathVariable Integer userIdx, @RequestBody TravelBoardRequestsDto requestsDto) throws Exception {
+    	return travelBoardService.deletePost(userIdx, requestsDto);
+    }
+}

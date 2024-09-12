@@ -1,0 +1,21 @@
+import com.example._team.domain.Theme;
+import com.example._team.repository.ThemeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ThemeService {
+
+    @Autowired
+    private ThemeRepository themeRepository;
+
+    public List<Theme> getAllThemes() {
+        return themeRepository.findAll();
+    }
+
+    public Theme getThemeById(Integer themeIdx) {
+        return themeRepository.findById(themeIdx).orElseThrow();
+    }
+}

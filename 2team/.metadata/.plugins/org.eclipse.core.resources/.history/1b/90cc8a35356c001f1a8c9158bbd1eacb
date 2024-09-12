@@ -1,0 +1,56 @@
+package com.example._team.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.repository.TravelBoardRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TravelBoardService {
+	
+	private final TravelBoardRepository travelBoardRepository;
+	
+	
+	public List<TravelBoardResponseDto> getPosts() {
+		return travelBoardRepository.findAllByOrderByModifiedAtDesc().stream().map(TravelBoardResponseDto::new).toList();
+	}
+	
+	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+		TravelBoard travelboard = new TravelBoard();
+		travelboard.setContent(requestsDto.getContent());
+		
+		travelBoardRepository.save(travelboard);
+		return new TravelBoardResponseDto(travelboard);
+	}
+	
+	@Transactional
+	public TravelBoardResponseDto getPost(Integer userIdx) {
+		return travelBoardRepository.findById(userIdx).map(TravelBoardResponseDto::new).orElseThrow(
+				() -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+		);
+	}
+	
+	@Transactional
+	public TravelBoardResponseDto updatePost(Integer userIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+		TravelBoard travelboard = travelBoardRepository.findById(userIdx).orElseThrow(
+				() -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+		);
+//		if (!requestsDto.getPassword().equals(users.get))
+		
+		travelboard.update(requestsDto);
+		return new TravelBoardResponseDto(travelboard);
+				
+	}
+
+}

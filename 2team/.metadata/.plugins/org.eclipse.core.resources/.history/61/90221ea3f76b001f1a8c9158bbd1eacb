@@ -1,0 +1,50 @@
+package com.example._team.controller;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.service.TravelBoardService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/travel-boards")
+@RequiredArgsConstructor
+public class TravelBoardController {
+
+    private final TravelBoardService travelBoardService;
+
+    @PostMapping
+    public ResponseEntity<TravelBoardResponseDto> createTravelBoard(@RequestBody TravelBoardRequestDto requestDto) {
+        TravelBoardResponseDto responseDto = travelBoardService.createTravelBoard(requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<TravelBoardResponseDto> getTravelBoard(@PathVariable Integer id) {
+        TravelBoardResponseDto responseDto = travelBoardService.getTravelBoard(id);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<TravelBoardResponseDto>> getAllTravelBoards() {
+        List<TravelBoardResponseDto> responseDtos = travelBoardService.getAllTravelBoards();
+        return ResponseEntity.ok(responseDtos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TravelBoardResponseDto> updateTravelBoard(@PathVariable Integer id,
+                                                                     @RequestBody TravelBoardRequestDto requestDto) {
+        TravelBoardResponseDto responseDto = travelBoardService.updateTravelBoard(id, requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTravelBoard(@PathVariable Integer id) {
+        travelBoardService.deleteTravelBoard(id);
+        return ResponseEntity.noContent().build();
+    }
+}

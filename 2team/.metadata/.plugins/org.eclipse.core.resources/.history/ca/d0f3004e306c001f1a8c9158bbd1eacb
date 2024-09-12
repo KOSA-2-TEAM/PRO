@@ -1,0 +1,22 @@
+package com.example._team.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.repository.TravelBoardRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TravelBoardService {
+	
+	private final TravelBoardRepository travelBoardRepository;
+	
+	public List<TravelBoardResponseDto> getPosts() {
+		return travelboardRepository.findAllByOrderByModifiedAtDesc().stream().map(TravelBoardResponseDto::new).toList();
+	}
+
+}

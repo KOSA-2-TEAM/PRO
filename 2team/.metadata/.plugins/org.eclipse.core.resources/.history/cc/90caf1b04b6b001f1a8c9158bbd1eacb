@@ -1,0 +1,48 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelImages;
+import com.example._team.domain.TravelBoard;
+import com.example._team.repository.TravelImagesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class TravelImagesService {
+
+    @Autowired
+    private TravelImagesRepository travelImagesRepository;
+
+    public List<TravelImages> getImagesByTravelBoard(TravelBoard travelBoard) {
+        return travelImagesRepository.findByTravelIdx(travelBoard);
+    }
+
+    public void saveImages(List<MultipartFile> images, TravelBoard travelBoard) {
+        for (MultipartFile file : images) {
+            if (!file.isEmpty()) {
+                try {
+                    TravelImages image = new TravelImages();
+                    image.setImagePath(saveFile(file));
+                    image.setUploadedAt(LocalDateTime.now());
+                    image.setTravelIdx(travelBoard);
+                    travelImagesRepository.save(image);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public void deleteImagesByTravelBoard(TravelBoard travelBoard) {
+        travelImagesRepository.deleteByTravelIdx(travelBoard);
+    }
+
+    private String saveFile(MultipartFile file) throws IOException {
+        // Implement file saving logic here
+        return file.getOriginalFilename(); // For demo purposes
+    }
+}

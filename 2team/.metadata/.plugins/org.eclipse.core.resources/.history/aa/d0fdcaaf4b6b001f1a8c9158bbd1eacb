@@ -1,0 +1,33 @@
+package com.example._team.service;
+
+import com.example._team.domain.Theme;
+import com.example._team.domain.TravelBoard;
+import com.example._team.repository.ThemeRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ThemeService {
+
+    @Autowired
+    private ThemeRepository themeRepository;
+
+    public List<Theme> getThemesByTravelBoard(TravelBoard travelBoard) {
+        return themeRepository.findByTravelIdx(travelBoard);
+    }
+
+    public void saveThemes(List<String> themeNames, TravelBoard travelBoard) {
+        for (String name : themeNames) {
+            Theme theme = new Theme();
+            theme.setName(name);
+            theme.setTravelIdx(travelBoard);
+            themeRepository.save(theme);
+        }
+    }
+
+    public void deleteThemesByTravelBoard(TravelBoard travelBoard) {
+        themeRepository.deleteByTravelIdx(travelBoard);
+    }
+}

@@ -1,0 +1,25 @@
+package com.example._team.dto;
+
+import com.example._team.domain.enums.Region;
+//import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+import java.time.LocalDateTime;
+
+//@Data
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+public class TravelBoardResponseDto {
+    private Integer travelIdx;
+    private String title;
+    private String content;
+    private Region region;
+    private LocalDateTime statDate;
+    private LocalDateTime endDate;
+    private Integer isPublic;
+}

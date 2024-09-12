@@ -1,0 +1,122 @@
+package com.example._team.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.domain.Users;
+import com.example._team.dto.SuccessResponseDto;
+import com.example._team.dto.TravelBoardRequestsDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.repository.TravelBoardRepository;
+
+import lombok.RequiredArgsConstructor;
+
+@Service
+@RequiredArgsConstructor
+public class TravelBoardService {
+	
+	private final TravelBoardRepository travelBoardRepository;
+	
+	private final UsersRepository usersRepository;
+	
+	public List<TravelBoardResponseDto> getPosts() {
+		return travelBoardRepository.findAllByOrderByCreatedAtDesc().stream().map(TravelBoardResponseDto::new).toList();
+	}
+	
+//	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+//		TravelBoard travelboard = new TravelBoard();
+//		travelboard.setContent(requestsDto.getContent());
+//		
+//		travelBoardRepository.save(travelboard);
+//		return new TravelBoardResponseDto(travelboard);
+//	}
+	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+	    TravelBoard travelboard = new TravelBoard();
+	    travelboard.setTitle(requestsDto.getTitle());
+	    travelboard.setContent(requestsDto.getContent());
+	    travelboard.setRegion(requestsDto.getRegion());
+	    travelboard.setStatDate(requestsDto.getStatDate());
+	    travelboard.setEndDate(requestsDto.getEndDate());
+	    travelboard.setIsPublic(requestsDto.getIsPublic());
+	    travelboard.setUserIdx(requestsDto.getUserIdx());
+	    
+	    travelBoardRepository.save(travelboard);
+	    return new TravelBoardResponseDto(travelboard);
+	}
+	
+	
+//	@Transactional
+//	public TravelBoardResponseDto getPost(Integer userIdx) {
+//		return travelBoardRepository.findById(userIdx).map(TravelBoardResponseDto::new).orElseThrow(
+//				() -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+//		);
+//	}
+//	
+//	@Transactional
+//	public TravelBoardResponseDto updatePost(Integer userIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//		TravelBoard travelboard = travelBoardRepository.findById(userIdx).orElseThrow(
+//				() -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+//		);
+////		if (!requestsDto.get().equals(users.get))
+//		
+////		travelboard.update(requestsDto);
+//		return new TravelBoardResponseDto(travelboard);	
+//	}
+//	
+//	@Transactional
+//	public SuccessResponseDto deletePost(Integer userIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+//		TravelBoard travelboard = travelBoardRepository.findById(userIdx).orElseThrow(
+//				() -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+//		);
+//		
+//		return new SuccessResponseDto(true);
+//	}
+	
+	@Transactional
+	public TravelBoardResponseDto getPost(Integer travelIdx) {
+	    return travelBoardRepository.findById(travelIdx).map(TravelBoardResponseDto::new).orElseThrow(
+	            () -> new IllegalArgumentException("아이디가 존재하지 않습니다.")
+	    );
+	}
+
+	@Transactional
+	public TravelBoardResponseDto updatePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+	    TravelBoard travelboard = travelBoardRepository.findById(travelIdx).orElseThrow(
+	            () -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+	    );
+	    travelboard.setTitle(requestsDto.getTitle());
+	    travelboard.setContent(requestsDto.getContent());
+	    // 필요한 필드를 업데이트
+	    travelBoardRepository.save(travelboard);
+	    return new TravelBoardResponseDto(travelboard);    
+	}
+
+	@Transactional
+	public SuccessResponseDto deletePost(Integer travelIdx, TravelBoardRequestsDto requestsDto) throws Exception {
+	    TravelBoard travelboard = travelBoardRepository.findById(travelIdx).orElseThrow(
+	            () -> new IllegalAccessError("아이디가 존재하지 않습니다.")
+	    );
+	    travelBoardRepository.delete(travelboard);
+	    return new SuccessResponseDto(true);
+	}
+	
+	public TravelBoardResponseDto createPost(TravelBoardRequestsDto requestsDto) {
+        // Users 엔티티를 가져오거나 새로 생성합니다.
+        Users user = usersRepository.findById(requestsDto.getUserIdx().getUserId())
+                                   .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // TravelBoard 엔티티 생성 및 설정
+        TravelBoard travelBoard = new TravelBoard();
+        travelBoard.setUserIdx(user);
+        // 다른 설정
+
+        // TravelBoard 저장
+        travelBoardRepository.save(travelBoard);
+        return new TravelBoardResponseDto(travelBoard);
+    }
+
+
+}

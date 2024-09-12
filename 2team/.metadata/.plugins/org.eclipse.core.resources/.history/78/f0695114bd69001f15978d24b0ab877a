@@ -1,0 +1,32 @@
+package com.example._team.service;
+
+import com.example._team.domain.TravelAlbum;
+import com.example._team.repository.TravelAlbumRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TravelAlbumService {
+
+    @Autowired
+    private TravelAlbumRepository travelAlbumRepository;
+
+    public List<TravelAlbum> getAllAlbums() {
+        return travelAlbumRepository.findAll();
+    }
+
+    public Optional<TravelAlbum> getAlbumById(Integer id) {
+        return travelAlbumRepository.findById(id);
+    }
+
+    public TravelAlbum createOrUpdateAlbum(TravelAlbum album) {
+        return travelAlbumRepository.save(album);
+    }
+
+    public void deleteAlbum(Integer id) {
+        travelAlbumRepository.deleteById(id);
+    }
+}

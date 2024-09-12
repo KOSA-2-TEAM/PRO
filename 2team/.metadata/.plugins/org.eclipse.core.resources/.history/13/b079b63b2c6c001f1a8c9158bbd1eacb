@@ -1,0 +1,25 @@
+package com.example._team.controller;
+
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.service.TravelBoardService;
+
+import lombok.RequiredArgsConstructor;
+
+@RestController
+@RequiredArgsConstructor
+public class TravelBoardController {
+
+    private final TravelBoardService travelBoardService;
+    
+    @GetMapping("/api/posts")
+    public List<TravelBoardResponseDto> getPosts() {
+    	return travelBoardService.getPosts();
+    }
+
+    
+}

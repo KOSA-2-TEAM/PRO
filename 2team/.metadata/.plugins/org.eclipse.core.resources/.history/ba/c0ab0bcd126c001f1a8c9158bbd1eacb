@@ -1,0 +1,163 @@
+package com.example._team.service.impl;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.exception.DataNotFoundException;
+import com.example._team.repository.TravelBoardRepository;
+import com.example._team.service.TravelBoardService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class TravelBoardServiceImpl implements TravelBoardService {
+
+    private final TravelBoardRepository travelBoardRepository;
+
+    @Override
+    public TravelBoardResponseDto createTravelBoard(TravelBoardRequestDto requestDto) {
+        TravelBoard travelBoard = new TravelBoard();
+        travelBoard.setTitle(requestDto.getTitle());
+        travelBoard.setContent(requestDto.getContent());
+        travelBoard.setRegion(requestDto.getRegion());
+        travelBoard.setStatDate(requestDto.getStatDate());
+        travelBoard.setEndDate(requestDto.getEndDate());
+        travelBoard.setIsPublic(requestDto.getIsPublic());
+        travelBoard.setUserIdx(requestDto.getUserIdx());
+
+        TravelBoard savedTravelBoard = travelBoardRepository.save(travelBoard);
+        return mapToResponseDto(savedTravelBoard);
+    }
+
+    @Override
+    public TravelBoardResponseDto getTravelBoard(Integer id) {
+        TravelBoard travelBoard = travelBoardRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found with id: " + id));
+        return mapToResponseDto(travelBoard);
+    }
+
+    @Override
+    public List<TravelBoardResponseDto> getAllTravelBoards() {
+        return travelBoardRepository.findAll().stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public TravelBoardResponseDto updateTravelBoard(Integer id, TravelBoardRequestDto requestDto) {
+        TravelBoard travelBoard = travelBoardRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found with id: " + id));
+
+        travelBoard.setTitle(requestDto.getTitle());
+        travelBoard.setContent(requestDto.getContent());
+        travelBoard.setRegion(requestDto.getRegion());
+        travelBoard.setStatDate(requestDto.getStatDate());
+        travelBoard.setEndDate(requestDto.getEndDate());
+        travelBoard.setIsPublic(requestDto.getIsPublic());
+        travelBoard.setUserIdx(requestDto.getUserIdx());
+
+        TravelBoard updatedTravelBoard = travelBoardRepository.save(travelBoard);
+        return mapToResponseDto(updatedTravelBoard);
+    }
+
+    @Override
+    public void deleteTravelBoard(Integer id) {
+        if (!travelBoardRepository.existsById(id)) {
+            throw new DataNotFoundException("TravelBoard not found with id: " + id);
+        }
+        travelBoardRepository.deleteById(id);
+    }
+
+    private TravelBoardResponseDto mapToResponseDto(TravelBoard travelBoard) {
+        return new TravelBoardResponseDto(
+                travelBoard.getTravelIdx(),
+                travelBoard.getTitle(),
+                travelBoard.getContent(),
+                travelBoard.getRegion(),
+                travelBoard.getStatDate(),
+                travelBoard.getEndDate(),
+                travelBoard.getIsPublic(),
+                travelBoard.getUserIdx().getUserIdx()  // userIdx를 Integer로 설정
+        );
+    }
+}
+
+
+//package com.example._team.service;
+//
+//import com.example._team.dto.TravelBoardRequestDto;
+//import com.example._team.dto.TravelBoardResponseDto;
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.domain.Users;
+//import com.example._team.exception.DataNotFoundException;
+//import com.example._team.repository.TravelBoardRepository;
+//import com.example._team.repository.UsersRepository;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.stereotype.Service;
+//import org.springframework.transaction.annotation.Transactional;
+//
+//import java.util.List;
+//import java.util.stream.Collectors;
+//
+//@Service
+//public class TravelBoardServiceImpl implements TravelBoardService {
+//
+//    @Autowired
+//    private TravelBoardRepository travelBoardRepository;
+//
+//    @Autowired
+//    private UsersRepository usersRepository;
+//
+//    @Transactional
+//    @Override
+//    public void saveTravelBoard(TravelBoardRequestDto travelBoardDto) {
+//        Integer userId = travelBoardDto.getUserIdx();
+//        Users user = usersRepository.findById(userId)
+//                .orElseThrow(() -> new DataNotFoundException("User not found with ID: " + userId));
+//        TravelBoard travelBoard = travelBoardDto.toEntity(user);
+//        travelBoardRepository.save(travelBoard);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void update(Integer id, TravelBoardRequestDto dto) {
+//        TravelBoard travelBoard = travelBoardRepository.findById(id)
+//                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found with ID: " + id));
+//        travelBoard.setTitle(dto.getTitle());
+//        travelBoard.setContent(dto.getContent());
+//        travelBoard.setRegion(dto.getRegion());
+//        travelBoard.setStatDate(dto.getStatDate());
+//        travelBoard.setEndDate(dto.getEndDate());
+//        travelBoard.setIsPublic(dto.getIsPublic());
+//        travelBoardRepository.save(travelBoard);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void deleteTravelBoard(Integer id) {
+//        TravelBoard travelBoard = travelBoardRepository.findById(id)
+//                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found with ID: " + id));
+//        travelBoardRepository.delete(travelBoard);
+//    }
+//
+//    @Transactional
+//    @Override
+//    public TravelBoardResponseDto getTravelBoard(Integer id) {
+//        TravelBoard travelBoard = travelBoardRepository.findById(id)
+//                .orElseThrow(() -> new DataNotFoundException("TravelBoard not found with ID: " + id));
+//        return TravelBoardResponseDto.fromEntity(travelBoard);
+//    }
+//
+//    @Override
+//    public List<TravelBoardResponseDto> getTravelBoardList() {
+//        List<TravelBoard> travelBoards = travelBoardRepository.findAll();
+//        return travelBoards.stream()
+//                .map(TravelBoardResponseDto::fromEntity)
+//                .collect(Collectors.toList());
+//    }
+//}

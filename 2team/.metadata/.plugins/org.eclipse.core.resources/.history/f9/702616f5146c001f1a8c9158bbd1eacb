@@ -1,0 +1,46 @@
+package com.example._team.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.domain.TravelImages;
+
+public interface TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
+	// 특정 사용자 ID를 기준으로 여행 보드 조회
+    @Query("SELECT t FROM TravelBoard t WHERE t.userIdx.userIdx = :userId")
+    List<TravelBoard> findAllByUserId(@Param("userId") Integer userId);
+    
+    // 여행 보드와 관련된 이미지들을 조회
+    @Query("SELECT i FROM TravelImages i WHERE i.travelBoard.travelIdx = :travelBoardId")
+    List<TravelImages> findImagesByTravelBoardId(@Param("travelBoardId") Integer travelBoardId);
+    
+    
+}
+
+
+//package com.example._team.repository;
+//
+//import java.util.List;
+//
+//import org.springframework.data.jpa.repository.JpaRepository;
+//import org.springframework.data.jpa.repository.Query;
+//import org.springframework.data.repository.query.Param;
+//
+//import com.example._team.domain.TravelBoard;
+//import com.example._team.domain.enums.Region;
+//
+//public interface TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
+//
+//    List<TravelBoard> findByTitleContaining(String keyword);
+//
+//    @Query("SELECT t FROM TravelBoard t WHERE t.region = :region ORDER BY t.travelIdx DESC")
+//    List<TravelBoard> findByRegionOrderByTravelIdxDesc(@Param("region") Region region);
+//
+//    List<TravelBoard> findAllByOrderByStatDateDesc();
+//
+////    Page<TravelBoard> findAll(Pageable pageable);
+//}

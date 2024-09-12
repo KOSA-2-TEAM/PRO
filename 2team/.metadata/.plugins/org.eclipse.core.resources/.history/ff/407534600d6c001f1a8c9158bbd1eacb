@@ -1,0 +1,114 @@
+package com.example._team.controller;
+
+import com.example._team.domain.enums.Region;
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.exception.DataNotFoundException;
+import com.example._team.service.TravelBoardService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/travel-boards")
+public class TravelBoardController {
+
+    private final TravelBoardService travelBoardService;
+
+    // 여행 보드 업데이트
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateTravelBoard(@PathVariable Integer id, @RequestBody TravelBoardRequestDto travelBoardRequestDto) {
+        try {
+            travelBoardService.update(id, travelBoardRequestDto);
+            return new ResponseEntity<>("Travel board updated successfully", HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Failed to update travel board", HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    // 여행 보드 목록 조회
+    @GetMapping
+    public ResponseEntity<List<TravelBoardResponseDto>> getTravelBoardList(
+            @RequestParam(value = "page", defaultValue = "0") Integer pageNum) {
+        List<TravelBoardResponseDto> travelBoards = travelBoardService.getTravelBoardList(pageNum);
+        return new ResponseEntity<>(travelBoards, HttpStatus.OK);
+    }
+    
+    // 여행 보드 상세 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<TravelBoardResponseDto> getTravelBoard(@PathVariable Integer id) {
+        try {
+            TravelBoardResponseDto travelBoard = travelBoardService.getTravelBoard(id);
+            return new ResponseEntity<>(travelBoard, HttpStatus.OK);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    // 여행 보드 저장
+    @PostMapping
+    public ResponseEntity<String> saveTravelBoard(@RequestBody TravelBoardRequestDto travelBoardRequestDto) {
+        try {
+            travelBoardService.saveTravelBoard(travelBoardRequestDto);
+            return new ResponseEntity<>("Travel board saved successfully", HttpStatus.CREATED);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Failed to save travel board", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 여행 보드 삭제
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTravelBoard(@PathVariable Integer id) {
+        try {
+            travelBoardService.deleteTravelBoard(id);
+            return new ResponseEntity<>("Travel board deleted successfully", HttpStatus.NO_CONTENT);
+        } catch (DataNotFoundException e) {
+            return new ResponseEntity<>("Failed to delete travel board", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // 페이징 테스트 코드
+    @GetMapping("/paged")
+    public ResponseEntity<Page<TravelBoardResponseDto>> getTravelBoardListPaged(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "statDate,desc") String sort) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc(sort)));
+        Page<TravelBoardResponseDto> travelBoardPage = travelBoardService.getTravelBoardList(pageable);
+        return ResponseEntity.ok(travelBoardPage);
+    }
+
+    // 여행 보드 지역별 조회
+    @GetMapping("/region/{region}")
+    public ResponseEntity<List<TravelBoardResponseDto>> getTravelBoardsByRegion(@PathVariable Region region) {
+        try {
+            List<TravelBoardResponseDto> travelBoards = travelBoardService.getTravelBoardsByRegionWithSorting(region);
+            return new ResponseEntity<>(travelBoards, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    // 여행 보드 검색 키워드
+    @GetMapping("/search")
+    public ResponseEntity<List<TravelBoardResponseDto>> searchTravelBoards(@RequestParam("keyword") String keyword) {
+        List<TravelBoardResponseDto> travelBoards = travelBoardService.searchTravelBoards(keyword);
+        return new ResponseEntity<>(travelBoards, HttpStatus.OK);
+    }
+
+    // 여행 보드 날짜별 조회
+    @GetMapping("/by-stat-date")
+    public ResponseEntity<List<TravelBoardResponseDto>> getTravelBoardListByStatDate() {
+        List<TravelBoardResponseDto> travelBoards = travelBoardService.getTravelBoardListByStatDate();
+        return new ResponseEntity<>(travelBoards, HttpStatus.OK);
+    }
+}

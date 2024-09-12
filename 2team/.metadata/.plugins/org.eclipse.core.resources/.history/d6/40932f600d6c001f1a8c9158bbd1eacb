@@ -1,0 +1,40 @@
+package com.example._team.service;
+
+import com.example._team.dto.TravelBoardRequestDto;
+import com.example._team.dto.TravelBoardResponseDto;
+import com.example._team.domain.TravelBoard;
+import com.example._team.domain.enums.Region;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+public interface TravelBoardService {
+
+    // 여행 보드 작성
+    void saveTravelBoard(TravelBoardRequestDto travelBoardDto);
+
+    // 여행 보드 수정
+    void update(Integer id, TravelBoardRequestDto dto);
+
+    // 여행 보드 삭제
+    void deleteTravelBoard(Integer id);
+
+    // 여행 보드 상세 조회
+    TravelBoardResponseDto getTravelBoard(Integer id);
+
+    // 여행 보드 리스트 페이지 (기본)
+    List<TravelBoardResponseDto> getTravelBoardList(Integer pageNum);
+    
+    // 페이징 테스트 코드
+    Page<TravelBoardResponseDto> getTravelBoardList(Pageable pageable);
+
+    // 여행 보드 검색 지역 리스트
+    List<TravelBoardResponseDto> getTravelBoardsByRegionWithSorting(Region region);
+
+    // 여행 보드 검색 날짜 리스트 (기본으로 정렬)
+    List<TravelBoardResponseDto> getTravelBoardListByStatDate();
+
+    // 여행 보드 검색 키워드 리스트
+    List<TravelBoardResponseDto> searchTravelBoards(String keyword);
+}

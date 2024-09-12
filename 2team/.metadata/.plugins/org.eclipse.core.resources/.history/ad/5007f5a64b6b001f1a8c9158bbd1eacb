@@ -1,0 +1,37 @@
+package com.example._team.controller;
+
+import com.example._team.domain.Theme;
+import com.example._team.domain.TravelBoard;
+import com.example._team.service.ThemeService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@Controller
+@RequestMapping("/themes")
+public class ThemeController {
+
+    @Autowired
+    private ThemeService themeService;
+
+    @PostMapping("/create")
+    public String createThemes(@RequestParam("travelIdx") Integer travelIdx,
+                               @RequestParam("themes") List<String> themes) {
+        TravelBoard travelBoard = new TravelBoard(); // Fetch the TravelBoard by ID
+        travelBoard.setTravelIdx(travelIdx);
+        themeService.saveThemes(themes, travelBoard);
+        return "redirect:/travel-boards/" + travelIdx;
+    }
+
+    @GetMapping("/{travelIdx}")
+    public String getThemesByTravelBoard(@PathVariable Integer travelIdx, Model model) {
+        TravelBoard travelBoard = new TravelBoard(); // Fetch the TravelBoard by ID
+        travelBoard.setTravelIdx(travelIdx);
+        List<Theme> themes = themeService.getThemesByTravelBoard(travelBoard);
+        model.addAttribute("themes", themes);
+        return "themes/list";
+    }
+}

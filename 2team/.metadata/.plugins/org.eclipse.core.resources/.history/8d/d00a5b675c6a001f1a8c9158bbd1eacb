@@ -1,0 +1,21 @@
+import com.example._team.domain.TravelImages;
+import com.example._team.repository.TravelImagesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class TravelImagesService {
+
+    @Autowired
+    private TravelImagesRepository travelImagesRepository;
+
+    public List<TravelImages> getAllImages() {
+        return travelImagesRepository.findAll();
+    }
+
+    public TravelImages saveImage(TravelImages image) {
+        return travelImagesRepository.save(image);
+    }
+}

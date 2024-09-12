@@ -1,0 +1,14 @@
+package com.example._team.repository;
+
+import com.example._team.domain.TravelImages;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
+
+@Repository
+public interface TravelImagesRepository extends JpaRepository<TravelImages, Integer> {
+
+    Optional<TravelImages> findById(Integer id);
+
+}

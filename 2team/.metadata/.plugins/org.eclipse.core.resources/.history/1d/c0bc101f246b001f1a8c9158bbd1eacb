@@ -1,0 +1,41 @@
+package com.example._team.mapper;
+
+import com.example._team.domain.TravelBoard;
+import com.example._team.dto.TravelBoardDTO;
+import org.springframework.stereotype.Component;
+
+@Component
+public class TravelBoardMapper {
+
+    public TravelBoardDTO toDto(TravelBoard travelBoard) {
+        if (travelBoard == null) {
+            return null;
+        }
+        return new TravelBoardDTO(
+                travelBoard.getTravelIdx(),
+                travelBoard.getTitle(),
+                travelBoard.getContent(),
+                travelBoard.getRegion(),
+                travelBoard.getStatDate(),
+                travelBoard.getEndDate(),
+                travelBoard.getIsPublic(),
+                travelBoard.getUserIdx() != null ? travelBoard.getUserIdx().getUserIdx() : null
+        );
+    }
+
+    public TravelBoard toEntity(TravelBoardDTO travelBoardDTO) {
+        if (travelBoardDTO == null) {
+            return null;
+        }
+        TravelBoard travelBoard = new TravelBoard();
+        travelBoard.setTravelIdx(travelBoardDTO.getTravelIdx());
+        travelBoard.setTitle(travelBoardDTO.getTitle());
+        travelBoard.setContent(travelBoardDTO.getContent());
+        travelBoard.setRegion(travelBoardDTO.getRegion());
+        travelBoard.setStatDate(travelBoardDTO.getStatDate());
+        travelBoard.setEndDate(travelBoardDTO.getEndDate());
+        travelBoard.setIsPublic(travelBoardDTO.getIsPublic());
+        // Set the user entity if needed
+        return travelBoard;
+    }
+}

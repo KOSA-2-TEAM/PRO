@@ -1,0 +1,14 @@
+package com.example._team.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example._team.domain.TravelBoard;
+
+public interface TravelBoardRepository extends JpaRepository<TravelBoard, Integer> {
+	List<TravelBoard> findAllByOrderByCreatedAtDesc();
+	
+	// 이메일을 통해 해당 사용자가 작성한 여행 보드를 조회
+    List<TravelBoard> findByUserIdxEmail(String email);
+}

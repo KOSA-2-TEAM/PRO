@@ -1,0 +1,49 @@
+package com.example._team.dto;
+
+import com.example._team.domain.enums.Region;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class TravelBoardDTO {
+    private Integer travelIdx;
+    private String title;
+    private String content;
+    private Region region;
+    private LocalDateTime statDate;
+    private LocalDateTime endDate;
+    private Integer isPublic;
+    private Integer userIdx; // Assume userIdx is included for simplicity
+    private Integer likesCount; // 좋아요 수
+}
+
+
+
+// 좋아요 추가 전 코드
+//package com.example._team.dto;
+//
+//import com.example._team.domain.enums.Region;
+//import lombok.AllArgsConstructor;
+//import lombok.Data;
+//import lombok.NoArgsConstructor;
+//
+//import java.time.LocalDateTime;
+//
+//@Data
+//@AllArgsConstructor
+//@NoArgsConstructor
+//public class TravelBoardDTO {
+//    private Integer travelIdx;
+//    private String title;
+//    private String content;
+//    private Region region;
+//    private LocalDateTime statDate;
+//    private LocalDateTime endDate;
+//    private Integer isPublic;
+//    private Integer userIdx; // Assume userIdx is included for simplicity
+//}
