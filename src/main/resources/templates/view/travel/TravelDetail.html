@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/css/travel/RandomAlbum.css}">
-    <title>여행 앨범 상세 정보</title>
-    <style>
-        body {
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link rel="stylesheet" type="text/css" th:href="@{/css/styles.css}">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/css/travel/RandomAlbum.css}">
+<title>여행 앨범 상세 정보</title>
+<style>
+body {
             background-color: #f8f9fa;
         }
 
@@ -20,14 +24,19 @@
             padding: 40px;
             max-width: 800px;
             margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .result-image {
             width: 100%;
-            height: 300px;
+            max-width: 600px;
+            height: auto;
             border-radius: 12px;
             object-fit: cover;
             margin-bottom: 20px;
+            filter: drop-shadow(5px 5px 5px #000)
         }
 
         .theme-list ul {
@@ -120,67 +129,84 @@
         .action-buttons .btn {
             margin-left: 10px;
         }
-    </style>
+</style>
 </head>
 <body>
-<main>
-    <section class="detail-container fade-in">
+	<main>
+		<section class="detail-container fade-in">
 
-        <!-- 앨범 썸네일 및 제목 -->
-        <img th:src="@{${response.thumbnail}}" alt="Album image" class="result-image img-thumbnail">
-        <h2 class="text-center" th:text="${response.title}">Album Title</h2>
-        <p class="text-muted text-center" th:text="${response.dateRange}">Date Range</p>
+			<!-- 앨범 썸네일 및 제목 -->
+			<img th:src="@{${response.thumbnail}}" alt="Album image"
+				class="result-image img-thumbnail">
 
-        <!-- 테마 리스트 출력 -->
-        <div class="theme-list">
-            <ul>
-                <li th:each="theme : ${response.travelThemeList}">
-                    <a th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
-                       th:text="${theme.name}" class="text-white"></a>
-                </li>
-            </ul>
-        </div>
-        <!-- 콘텐츠 출력 (TinyMCE 사용) -->
-        <div class="content" th:utext="${response.content}"></div>
 
-        <!-- 좋아요 및 수정, 삭제 버튼 -->
-        <div class="like-section">
-            <div class="icon-button">
-                <i class="fas fa-heart"
-                   th:classappend="${connectUser != null && userList.contains(connectUser.userIdx) ? 'filled' : 'empty'}"
-                   id="likeIcon"></i>
-                <span id="likeCount" th:text="${response.postLikeCount}">0</span>
-            </div>
+			<h2 class="text-center" th:text="${response.title}">Album Title</h2>
+			<p class="text-muted text-center" th:text="${response.dateRange}">Date
+				Range</p>
 
-            <!-- 삭제 버튼 추가 -->
-            <div class="d-flex justify-content-end" th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
-                <form th:action="@{/api/travel/delete/{id}(id=${response.id})}" method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
-                    <button type="submit" class="btn btn-danger ms-2">삭제</button>
-                </form>
-            </div>
+			<!-- 테마 리스트 출력 -->
+			<div class="theme-list">
+				<ul>
+					<li th:each="theme : ${response.travelThemeList}"><a
+						th:href="@{/api/travel/search(region=${region}, isPublic=1, theme=${theme.name})}"
+						th:text="${theme.name}" class="text-white"></a></li>
+				</ul>
+			</div>
+			<!-- 콘텐츠 출력 (TinyMCE 사용) -->
+			<div class="content" th:utext="${response.content}"></div>
 
-            <div class="user-list-container">
-                <div class="user-list">
-                    <h3>Likes</h3>
-                    <ul>
-                        <li th:each="user : ${userList}" data-user-idx="${user.userIdx}">
-                            <span th:text="${user.nickname}"></span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+			<!-- 좋아요 및 수정, 삭제 버튼 -->
+			<div class="like-section">
+				<div class="icon-button">
+					<i class="fas fa-heart"
+						th:classappend="${connectUser != null && userList.contains(connectUser.userIdx) ? 'filled' : 'empty'}"
+						id="likeIcon"></i> <span id="likeCount"
+						th:text="${response.postLikeCount}">0</span>
+				</div>
 
-        <!-- JavaScript에서 사용할 travelIdx와 userIdx를 HTML 속성으로 추가 -->
-        <input type="hidden" id="travelIdx" th:value="${response.id}"/>
-        <input type="hidden" id="userIdx" th:value="${connectUser.userIdx}"/>
+				<div class="d-flex justify-content-end"
+					th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
 
-    </section>
-</main>
+					<!-- 수정 버튼 추가, 작성자:이동진 / 내용 : 수정버튼 추가 -->
+					<div class="d-flex justify-content-end"
+						th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
+						<form th:action="@{/api/travel/delete/{id}(id=${response.id})}"
+method="post">
+							<button type="submit" class="btn btn-danger ms-2">수정</button>
+						</form>
+					</div>
 
-<!-- Bootstrap JS and dependencies -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script>
+					<!-- 삭제 버튼 추가 -->
+					<div class="d-flex justify-content-end"
+						th:if="${connectUser != null and connectUser.userIdx == response.userIdx}">
+						<form th:action="@{/api/travel/delete/{id}(id=${response.id})}"
+							method="post" onsubmit="return confirm('정말로 삭제하시겠습니까?');">
+							<button type="submit" class="btn btn-danger ms-2">삭제</button>
+						</form>
+					</div>
+
+					<div class="user-list-container">
+						<div class="user-list">
+							<h3>Likes</h3>
+							<ul>
+								<li th:each="user : ${userList}" data-user-idx="${user.userIdx}">
+									<span th:text="${user.nickname}"></span>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+
+				<!-- JavaScript에서 사용할 travelIdx와 userIdx를 HTML 속성으로 추가 -->
+				<input type="hidden" id="travelIdx" th:value="${response.id}" /> <input
+					type="hidden" id="userIdx" th:value="${connectUser.userIdx}" />
+		</section>
+	</main>
+
+	<!-- Bootstrap JS and dependencies -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
     document.addEventListener('DOMContentLoaded', function () {
         console.log("DOMContentLoaded event fired");
         const likeIcon = document.querySelector('.like-section .fa-heart');

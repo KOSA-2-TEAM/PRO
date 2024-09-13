@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,8 +36,8 @@ import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 
 import lombok.RequiredArgsConstructor;
 
-@Controller
 @RequiredArgsConstructor
+@Controller
 @RequestMapping("/api/travel")
 public class TravelController {
 
@@ -183,57 +181,4 @@ public class TravelController {
         travelService.deleteTravelBoard(travelIdx);
         return "redirect:/api/travel/random";
     }
-    
-    
-    
-    
-    
-    // 마이페이지 여행 앨범 글 수정
-//    @GetMapping("/mypage/change-")
-    
-    // 여행앨범 수정 폼
-    @GetMapping("/editform/{id}") // /{id}
-    public String showEditForm(@PathVariable Integer id, Model model) {
-    	System.out.println("Editing form for id: " + id);  // 디버깅용 로그 추가
-    	String email = SecurityContextHolder.getContext().getAuthentication().getName();
-    	Users user = userService.findByEmail(email);
-    	
-    	TravelAlbumDetailResponseDTO response = travelService.getTravelBoard(id, user);
-//    	List<String> theme = travelService.getTravelThemes();
-    	
-    	model.addAttribute("response", response);
-    	model.addAttribute("user", user);
-    	return "view/travel/TravelEdit";
-    }
-
-	// 여행앨범 수정
-	@PutMapping("/edit/{id}")
-	public String updateTravelAlbum(@PathVariable Integer id, @ModelAttribute("request") createTravelAlbumDTO request,
-			RedirectAttributes redirectAttributes) {
-		String email = SecurityContextHolder.getContext().getAuthentication().getName();
-		boolean success = travelService.updateTravelAlbum(id, email, request);
-
-		if (success) {
-			redirectAttributes.addAttribute("id", id);
-			return "redirect:/api/travel/detail/{id}";
-		} else {
-			redirectAttributes.addFlashAttribute("error", "앨범 수정에 실패했습니다.");
-			return "redirect:/api/travel/editform/{id}";
-		}
-	}
 }
-	
-	// 여행 앨범 전체 조회
-//	@GetMapping("/list")
-//	public String getallTravelBoard(Model model) {
-//		
-//		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//		Users user = (Users) authentication.getPrincipal();
-//		
-//		model.addAttribute("nickname", user.getNickname());
-//		
-//		Page<TravelAlbumResponseDTO> travelPage = travelService.getBoard
-//		model.addAttribute("travelList", );
-//		
-//		return "view/travel/TravelDetail";
-//	}
