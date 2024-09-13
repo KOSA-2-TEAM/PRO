@@ -120,6 +120,7 @@ public class TravelController {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
         redirectAttributes.addAttribute("id", response.getTravelIdx());
+        
         return "redirect:/api/travel/detail/{id}";
     }
 
