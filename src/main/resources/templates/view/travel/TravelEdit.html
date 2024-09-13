@@ -185,7 +185,7 @@
     <form th:action="@{/api/travel/update}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
-            <input type="text" id="title" name="title" th:value="${response.}" class="form-control" required/>
+            <input type="text" id="title" name="title" th:value="${response.title}" class="form-control" required/>
         </div>
 
         <div class="mb-3">
@@ -210,23 +210,24 @@
 
         <div class="mb-3">
             <label for="statDate" class="form-label">여행시작일</label>
-            <input type="date" id="statDate" name="statDate" class="form-control" required/>
+            <input type="date" id="statDate" name="statDate" th:value="${startDate}" class="form-control" required/>
         </div>
 
         <div class="mb-3">
             <label for="endDate" class="form-label">여행종료일</label>
-            <input type="date" id="endDate" name="endDate" class="form-control" required/>
+            <input type="date" id="endDate" name="endDate" th:value="${endDAte}" class="form-control" required/>
         </div>
 
         <div class="mb-3">
             <label for="thumbnail" class="form-label">대표사진</label>
-            <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*" required/>
+            <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*"
+                   th:value="${response.getThumbnail()}" required/>
         </div>
 
         <!-- TinyMCE 에디터 적용된 내용 입력 -->
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
-            <textarea id="content" name="content" class="form-control" rows="10"></textarea>
+            <textarea th:text="${response.getContent()}" id="content" name="content" class="form-control" rows="10"></textarea>
         </div>
 
         <div class="mb-3">
