@@ -183,11 +183,13 @@
 <div class="upload-container">
     <h1>여행앨범 수정하기</h1>
     <form th:action="@{/api/travel/update}" method="post" enctype="multipart/form-data">
+<!--        th:value="${response.title}"-->
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
             <input type="text" id="title" name="title" th:value="${response.title}" class="form-control" required/>
         </div>
 
+<!--         기존에 있던 값 추가 못함-->
         <div class="mb-3">
             <label for="region" class="form-label">지역</label>
             <select id="region" name="region" class="form-select" required>
@@ -208,16 +210,19 @@
             </select>
         </div>
 
+<!--        // th:value="${startDate}"-->
         <div class="mb-3">
             <label for="statDate" class="form-label">여행시작일</label>
             <input type="date" id="statDate" name="statDate" th:value="${startDate}" class="form-control" required/>
         </div>
 
+<!--        th:value="${endDAte}"-->
         <div class="mb-3">
             <label for="endDate" class="form-label">여행종료일</label>
             <input type="date" id="endDate" name="endDate" th:value="${endDAte}" class="form-control" required/>
         </div>
 
+<!--        th:value="${response.getThumbnail()}" -> 안됨.... 썸네일 이미지 안들어감 -->
         <div class="mb-3">
             <label for="thumbnail" class="form-label">대표사진</label>
             <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*"
@@ -225,11 +230,13 @@
         </div>
 
         <!-- TinyMCE 에디터 적용된 내용 입력 -->
+<!--        th:text="${response.getContent()}"-->
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
             <textarea th:text="${response.getContent()}" id="content" name="content" class="form-control" rows="10"></textarea>
         </div>
 
+        <!--         기존에 있던 값 추가 못함-->
         <div class="mb-3">
             <label for="isPublic" class="form-label">공개여부 </label>
             <div class="radio-inline">
@@ -242,6 +249,7 @@
             </div>
         </div>
 
+        <!--         기존에 있던 값 추가 못함, 가져온 response에 테마값이 없나? 있긴함,, 애매 -->
         <div class="mb-3">
             <label for="themeInput" class="form-label">테마</label>
             <input type="text" id="themeInput" class="form-control"
