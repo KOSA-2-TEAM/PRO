@@ -14,6 +14,7 @@ import com.example._team.repository.TravelLikesRepository;
 import com.example._team.repository.TravelRepository;
 import com.example._team.repository.UserRepository;
 import com.example._team.service.global.DateUtils;
+import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
@@ -385,4 +386,5 @@ public class TravelService {
             return dto;
         }).collect(Collectors.toList());
     }
+
 }

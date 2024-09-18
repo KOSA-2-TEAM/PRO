@@ -177,6 +177,9 @@
                 addTag();
             }
         });
+
+        <!--새로운 값 추가-->
+
     </script>
 </head>
 <body>
@@ -250,17 +253,40 @@
         </div>
 
         <!--         기존에 있던 값 추가 못함, 가져온 response에 테마값이 없나? 있긴함,, 애매 -->
-        <div class="mb-3">
+        <!--<div class="mb-3">
             <label for="themeInput" class="form-label">테마</label>
             <input type="text" id="themeInput" class="form-control"
                    onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }"
                    placeholder="Enter theme and press Space"/>
             <div id="tagContainer" class="mt-2"></div>
+        </div>-->
+        <!--&#45;&#45; 기존에 있던 값 조회-->
+        <!--<div class="mb-3">
+            <label for="themeInput" class="form-label">테마</label>
+            <input type="text" id="themeInput" class="form-control" onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }" placeholder="Enter theme and press Space"/>
+            <div id="tagContainer" class="mt-2">
+                &lt;!&ndash; 기존 테마 리스트 렌더링 &ndash;&gt;
+                <div th:each="theme : ${response.travelThemeList}">
+                    <span class="tag" th:id="${theme.name}" th:text="${theme.name}"></span>
+                </div>
+            </div>
+        </div>-->
+        <!--&#45;&#45; 기존에 있던 값에 삭제 버튼 추가, 기능x-->
+        <div class="mb-3">
+            <label for="themeInput" class="form-label">테마</label>
+            <input type="text" id="themeInput" class="form-control" onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }" placeholder="Enter theme and press Space"/>
+            <div id="tagContainer" class="mt-2">
+                <!-- 기존 테마 리스트 렌더링 및 삭제 버튼 추가 -->
+                <div th:each="theme : ${response.travelThemeList}">
+                    <span class="tag" th:id="${theme.name}" th:text="${theme.name}"></span>
+                    <button type="button" class="btn btn-sm btn-danger" th:onclick="'removeTag(' + theme.name + ')'">X</button>
+                </div>
+            </div>
         </div>
 
         <div id="hiddenFieldsContainer"></div>
 
-        <button type="submit" class="btn btn-primary">Upload</button>
+        <button type="submit" class="btn btn-primary">수정완료</button>
     </form>
 </div>
 

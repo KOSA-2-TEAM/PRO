@@ -56,17 +56,18 @@ public class TravleUpdateController {
 	
 		return "view/travel/TravelEdit";
 	}
-	
-	
-	////////////////////////////////////////////////////////////////////////////////////
+
+    // 기존 값 못 불러옴(지역, 대표사진, 공개여부), 테마 삭제 버튼 수정 필요
+
+    ////////////////////////////////////////////////////////////////////////////////////
 	
     // 여행앨범 생성
-    @PostMapping("/create2222")
+    /*@PostMapping("/create2222")
     public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
                                     RedirectAttributes redirectAttributes) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
         redirectAttributes.addAttribute("id", response.getTravelIdx());
         return "redirect:/api/travel/detail/{id}";
-    }
+    }*/
 }

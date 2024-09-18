@@ -24,7 +24,5 @@ public class TravelAlbumUpdateRequestDTO {
     String content;
     Integer isPublic;
     private List<TravelAlbumThemeListDTO> travelThemeList = new ArrayList<>();
-    
-    
 
 }
