@@ -94,4 +94,15 @@ public class TravelAlbumResponseDTO {
         int likes;
         LocalDateTime createdAt;
     }
+    @Builder
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TravelAlbumByDate {
+        Integer id;
+        String thumbnail;
+        String title;
+        String dateRange;
+        String nickName;
+    }
 }

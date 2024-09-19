@@ -12,6 +12,7 @@ import com.example._team.service.TravelService;
 import com.example._team.service.UserService;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumByDate;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
@@ -95,8 +96,11 @@ public class TravelController {
     @GetMapping("/random")
     public String getRandomTravelAlbum(Model model) {
 
-        TravelAlbumDetailResponseDTO response = travelService.getRandomTravelAlbum();
-        model.addAttribute("response", response);
+        List<TravelAlbumDetailResponseDTO> randomResponses = travelService.getRandomTravelAlbums();
+        // 최신순으로 4개
+        List<TravelAlbumByDate> dateRangeRes = travelService.getTravelAlbumByDate();
+        model.addAttribute("randomResponses", randomResponses);
+        model.addAttribute("dateRangeRes", dateRangeRes);
         return "view/travel/random-list";
     }
 
