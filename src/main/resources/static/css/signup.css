@@ -1,3 +1,4 @@
+/* 기본 body 스타일 */
 body {
     font-family: 'Arial', sans-serif;
     min-height: 100vh;
@@ -9,6 +10,7 @@ body {
     align-items: center;
 }
 
+/* 메인 섹션 스타일 */
 .main-section {
     background-color: #ffffff;
     width: 100%;
@@ -21,6 +23,7 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
 
+/* 헤더 스타일 */
 h2 {
     text-align: center;
     font-weight: bold;
@@ -28,6 +31,7 @@ h2 {
     margin-bottom: 20px;
 }
 
+/* 설명 텍스트 스타일 */
 p {
     font-size: 16px;
     color: #666;
@@ -35,18 +39,22 @@ p {
     margin-bottom: 30px;
 }
 
+/* 입력 필드 스타일 */
 .form-control {
     border-radius: 8px;
     padding: 12px;
     font-size: 15px;
     background-color: #f7f7f7;
+    border: 1px solid #ced4da;
 }
 
+/* 입력 필드 포커스 스타일 */
 .form-control:focus {
     border-color: #4a90e2;
     box-shadow: 0 0 5px rgba(74, 144, 226, 0.2);
 }
 
+/* 버튼 스타일 */
 .btn-primary {
     background-color: #4a90e2;
     border-color: #4a90e2;
@@ -58,34 +66,47 @@ p {
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* 버튼 호버 효과 */
 .btn-primary:hover {
     background-color: #357ABD;
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
 }
 
+/* 라벨 스타일 */
 .form-group label {
     font-weight: bold;
     color: #555;
     margin-bottom: 10px;
 }
 
+/* 비밀번호 강도 및 매칭 메시지 스타일 */
 #passwordStrength, #passwordMatch, #phoneError {
     font-size: 14px;
     text-align: center;
     margin-top: 10px;
+    color: red;
 }
 
+/* 숨겨진 필드 애니메이션 */
 #additionalFields {
     display: none;
     animation: fadeInUp 1s ease forwards;
 }
 
+/* 인증번호 버튼 비활성화 스타일 */
 #verifyCodeButton:disabled {
     background-color: #95a5a6;
     cursor: not-allowed;
 }
 
+/* 페이드 인 애니메이션 */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(30px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* 버튼 비활성화 상태 */
+button:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
 }
