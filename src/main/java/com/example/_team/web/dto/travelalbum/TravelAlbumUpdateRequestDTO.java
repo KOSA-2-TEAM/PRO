@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.example._team.domain.enums.Region;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.TravelAlbumThemeListDTO;
 
 import lombok.AllArgsConstructor;
@@ -16,13 +17,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TravelAlbumUpdateRequestDTO {
-	String title;
-    String region;
-    LocalDate statDate;
-    LocalDate endDate;
-    MultipartFile thumbnail;
-    String content;
-    Integer isPublic;
+	private String title;
+//    String region;
+//	private Region region;
+	private String region;
+	private LocalDate statDate;
+	private LocalDate endDate;
+	private MultipartFile thumbnail;
+	private String content;
+	private Integer isPublic;
     private List<TravelAlbumThemeListDTO> travelThemeList = new ArrayList<>();
 
 }

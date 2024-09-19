@@ -37,6 +37,9 @@ public class TravelAlbumResponseDTO {
         boolean likedByCurrentUser; // 현재 사용자가 좋아요 눌렀는지 여부
         List<TravelAlbumImageListDTO> travelAlbumImageList;
         List<TravelThemeListDTO> travelThemeList;
+        
+        // 공개여부 추가
+        Integer isPublic;
     }
 
     @Builder

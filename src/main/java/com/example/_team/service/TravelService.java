@@ -1,5 +1,22 @@
 package com.example._team.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example._team.domain.Theme;
 import com.example._team.domain.TravelBoard;
 import com.example._team.domain.TravelImages;
@@ -14,7 +31,6 @@ import com.example._team.repository.TravelLikesRepository;
 import com.example._team.repository.TravelRepository;
 import com.example._team.repository.UserRepository;
 import com.example._team.service.global.DateUtils;
-import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumRequestDTO.createTravelAlbumDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumDetailResponseDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumImageListDTO;
@@ -23,23 +39,10 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumL
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumUpdateRequestDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -280,6 +283,7 @@ public class TravelService {
                 .dateRange(formattedDateRange)
                 .postLikeCount(postLikesCnt)
                 .likedByCurrentUser(likedByCurrentUser)
+                .isPublic(travelBoard.getIsPublic())  // 여기에 isPublic 값을 추가
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
@@ -386,5 +390,161 @@ public class TravelService {
             return dto;
         }).collect(Collectors.toList());
     }
+    
+//    @Transactional
+//    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+//        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+//            .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+//
+//        // 업데이트 로직
+//        travelBoard.setTitle(request.getTitle());
+//        travelBoard.setContent(request.getContent());
+//
+//        // 문자열을 Enum으로 변환 (Region 유효성 검사)
+//        travelBoard.setRegion(Region.fromString(request.getRegion().trim())); 
+//
+//        travelBoard.setStatDate(request.getStatDate());
+//        travelBoard.setEndDate(request.getEndDate());
+//        travelBoard.setIsPublic(request.getIsPublic());
+//
+//        // 업데이트된 내용을 저장
+//        travelRepository.save(travelBoard);
+//        return true;
+//    }
 
+
+
+    
+//    @Transactional
+//    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+//        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+//            .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+//
+//        // 현재 사용자가 게시물의 소유자인지 확인
+//        if (!travelBoard.getUserIdx().equals(user)) {
+//            throw new IllegalArgumentException("수정 권한이 없습니다.");
+//        }
+//
+//        // 업데이트 로직
+//        travelBoard.setTitle(request.getTitle());
+//        travelBoard.setContent(request.getContent());
+//        travelBoard.setRegion(Region.valueOf(request.getRegion()));
+//        travelBoard.setStatDate(request.getStatDate());
+//        travelBoard.setEndDate(request.getEndDate());
+//        travelBoard.setIsPublic(request.getIsPublic());
+//
+//        // 썸네일 이미지가 제공된 경우 S3에 업로드하고 URL 업데이트
+//        if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
+//            MultipartFile thumbnailFile = request.getThumbnail();
+//            String thumbnailFileName = UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+//            String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+//            String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+//            travelBoard.setThumbnail(thumbnailUrl);
+//        }
+//
+//        // 테마 정보 업데이트 (예시로 테마 삭제 후 새로 추가하는 방식)
+//        themeRepository.deleteByTravelIdx(travelBoard);
+//        request.getTravelThemeList().forEach(themeRequest -> {
+//            Theme theme = new Theme();
+//            theme.setName(themeRequest.getName());
+//            theme.setTravelIdx(travelBoard);
+//            themeRepository.save(theme);
+//        });
+//
+//        travelRepository.save(travelBoard);
+//        return true;
+//    }
+    
+//	@Transactional
+//	public boolean updateTravelBoard(Integer id, TravelAlbumUpdateRequestDTO request) {
+//		TravelBoard travelBoard = travelRepository.findById(id)
+//				.orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+//
+//		// 업데이트 로직
+//		travelBoard.setTitle(request.getTitle());
+//		travelBoard.setContent(request.getContent());
+//		travelBoard.setRegion(Region.valueOf(request.getRegion()));
+//		travelBoard.setStatDate(request.getStatDate());
+//		travelBoard.setEndDate(request.getEndDate());
+//		travelBoard.setIsPublic(request.getIsPublic());
+//
+//		// 썸네일 이미지가 제공된 경우 S3에 업로드하고 URL 업데이트
+//		if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
+//			MultipartFile thumbnailFile = request.getThumbnail();
+//			String thumbnailFileName = UUID.randomUUID().toString().substring(0, 10) + "-"
+//					+ thumbnailFile.getOriginalFilename();
+//			String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+//			String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+//			travelBoard.setThumbnail(thumbnailUrl);
+//		}
+//
+//		// 테마 정보 업데이트 (예시로 테마 삭제 후 새로 추가하는 방식)
+//		themeRepository.deleteByTravelIdx(travelBoard);
+//		request.getTravelThemeList().forEach(themeRequest -> {
+//			Theme theme = new Theme();
+//			theme.setName(themeRequest.getName());
+//			theme.setTravelIdx(travelBoard);
+//			themeRepository.save(theme);
+//		});
+//
+//		TravelBoard updateTravelBoard = travelRepository.save(travelBoard);
+//		return TravelAlbumUpdateRequestDTO.fromEntity();
+//	}
+    
+//    @Transactional
+//    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+//        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+//            .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+//
+//        if (!travelBoard.getUserIdx().equals(user)) {
+//            throw new IllegalArgumentException("수정 권한이 없습니다.");
+//        }
+//
+//        // 여기서 Region.valueOf를 사용하여 String을 Region Enum으로 변환합니다.
+//        Region region = Region.valueOf(request.getRegion());
+//        travelBoard.setRegion(region);
+//        travelBoard.setTitle(request.getTitle());
+//        travelBoard.setContent(request.getContent());
+//        travelBoard.setStatDate(request.getStatDate());
+//        travelBoard.setEndDate(request.getEndDate());
+//        travelBoard.setIsPublic(request.getIsPublic());
+//
+//        if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
+//            MultipartFile thumbnailFile = request.getThumbnail();
+//            String thumbnailFileName = UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+//            String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+//            String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+//            travelBoard.setThumbnail(thumbnailUrl);
+//        }
+//
+//        themeRepository.deleteByTravelIdx(travelBoard);
+//        request.getTravelThemeList().forEach(themeRequest -> {
+//            Theme theme = new Theme();
+//            theme.setName(themeRequest.getName());
+//            theme.setTravelIdx(travelBoard);
+//            themeRepository.save(theme);
+//        });
+//
+//        travelRepository.save(travelBoard);
+//        return true;
+//    }
+    
+//    @Transactional
+//    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+//        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+//            .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+//
+//        if (!travelBoard.getUserIdx().equals(user)) {
+//            throw new IllegalArgumentException("수정 권한이 없습니다.");
+//        }
+//
+//        travelBoard.setTitle(request.getTitle());
+//        travelBoard.setContent(request.getContent());
+//        travelBoard.setIsPublic(request.getIsPublic());
+//        travelBoard.setStatDate(request.getStatDate());
+//        travelBoard.setEndDate(request.getEndDate());
+//
+//        travelRepository.save(travelBoard);
+//        return true;
+//    }
 }

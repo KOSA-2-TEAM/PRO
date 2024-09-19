@@ -179,6 +179,7 @@
         });
 
         <!--새로운 값 추가-->
+     	
 
     </script>
 </head>
@@ -186,6 +187,7 @@
 <div class="upload-container">
     <h1>여행앨범 수정하기</h1>
     <form th:action="@{/api/travel/update}" method="post" enctype="multipart/form-data">
+    <!-- <form th:action="@{/api/travel/update/{travelIdx}(travelIdx=${response.id})}" method="post" enctype="multipart/form-data"> -->
 <!--        th:value="${response.title}"-->
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
@@ -195,7 +197,7 @@
 <!--         기존에 있던 값 추가 못함-->
         <div class="mb-3">
             <label for="region" class="form-label">지역</label>
-            <select id="region" name="region" class="form-select" required>
+				<!-- <select id="region" name="region" class="form-select" required>
                 <option value="서울">서울</option>
                 <option value="인천">인천</option>
                 <option value="부산">부산</option>
@@ -210,8 +212,25 @@
                 <option value="전라도">전라도</option>
                 <option value="경상도">경상도</option>
                 <option value="제주도">제주도</option>
-            </select>
-        </div>
+            </select> -->
+			<select id="region" name="region" class="form-select" required>
+				<option value="서울" th:selected="${response.region == '서울'}">서울</option>
+				<option value="인천" th:selected="${response.region == '인천'}">인천</option>
+				<option value="부산" th:selected="${response.region == '부산'}">부산</option>
+				<option value="대구" th:selected="${response.region == '대구'}">대구</option>
+				<option value="광주" th:selected="${response.region == '광주'}">광주</option>
+				<option value="대전" th:selected="${response.region == '대전'}">대전</option>
+				<option value="울산" th:selected="${response.region == '울산'}">울산</option>
+				<option value="세종" th:selected="${response.region == '세종'}">세종</option>
+				<option value="경기도" th:selected="${response.region == '경기도'}">경기도</option>
+				<option value="강원도" th:selected="${response.region == '강원도'}">강원도</option>
+				<option value="총청도" th:selected="${response.region == '총청도'}">총청도</option>
+				<option value="전라도" th:selected="${response.region == '전라도'}">전라도</option>
+				<option value="경상도" th:selected="${response.region == '경상도'}">경상도</option>
+				<option value="제주도" th:selected="${response.region == '제주도'}">제주도</option>
+			</select>
+
+			</div>
 
 <!--        // th:value="${startDate}"-->
         <div class="mb-3">
@@ -226,13 +245,37 @@
         </div>
 
 <!--        th:value="${response.getThumbnail()}" -> 안됨.... 썸네일 이미지 안들어감 -->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label for="thumbnail" class="form-label">대표사진</label>
             <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*"
                    th:value="${response.getThumbnail()}" required/>
-        </div>
+        </div> -->
+        
+		<div class="mb-3">
+			<label for="thumbnail" class="form-label">대표사진</label>
+			기존 이미지 미리보기
+			<div class="thumbnail-preview">
+				<img th:src="@{${response.thumbnail}}" alt="대표사진"
+					id="thumbnailImage" style="max-width: 200px;">
+			</div>
+			이미지 업로드 입력
+			<input type="file" id="thumbnail" name="thumbnail"
+				class="form-control" accept="image/*">
+		</div>
+		
 
-        <!-- TinyMCE 에디터 적용된 내용 입력 -->
+
+			<!-- 썸네일 미리보기 이미지 -->
+		<div class="thumbnail-preview">
+			<img src="[[${album.thumbnailUrl}]]" alt="썸네일 이미지"
+				id="thumbnailImage" style="max-width: 200px;">
+		</div>
+
+		<!-- 썸네일 업로드 input -->
+		<input type="file" name="thumbnail" id="thumbnailInput"
+			accept="image/*">
+
+			<!-- TinyMCE 에디터 적용된 내용 입력 -->
 <!--        th:text="${response.getContent()}"-->
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
@@ -240,7 +283,7 @@
         </div>
 
         <!--         기존에 있던 값 추가 못함-->
-        <div class="mb-3">
+        <!-- <div class="mb-3">
             <label for="isPublic" class="form-label">공개여부 </label>
             <div class="radio-inline">
                 <input type="radio" id="public" name="isPublic" value="1" required/>
@@ -250,9 +293,88 @@
                 <input type="radio" id="private" name="isPublic" value="0" required/>
                 <label for="private">비공개</label>
             </div>
-        </div>
+        </div> -->
+		<!-- <div class="mb-3">
+			<label for="isPublic" class="form-label">공개여부</label>
+			<div class="radio-inline">
+				<input type="radio" id="public" name="isPublic" value="1"
+					th:checked="${response.isPublic == 1}" required /> <label
+					for="public">공개</label>
+			</div>
+			<div class="radio-inline">
+				<input type="radio" id="private" name="isPublic" value="0"
+					th:checked="${response.isPublic == 0}" required /> <label
+					for="private">비공개</label>
+			</div>
+		</div> -->
+		<!-- <div class="mb-3">
+            <label for="isPublic" class="form-label">공개여부 </label>
+            <div class="radio-inline">
+                <input type="radio" id="public" name="isPublic" value="1" required/>
+                <label for="public">공개</label>
+            </div>
+            <div class="radio-inline">
+                <input type="radio" id="private" name="isPublic" value="0" required/>
+                <label for="private">비공개</label>
+            </div>
+        </div> -->
+		<!-- <div class="mb-3">
+			<label for="isPublic" class="form-label">공개여부</label>
+			<div class="radio-inline">
+				<input type="radio" id="public" name="isPublic" value="1"
+					th:checked="${response.isPublic == 1}" required /> <label
+					for="public">공개</label>
+			</div>
+			<div class="radio-inline">
+				<input type="radio" id="private" name="isPublic" value="0"
+					th:checked="${response.isPublic == 0}" required /> <label
+					for="private">비공개</label>
+			</div>
+		</div> -->
+		
+		
+		<!-- <div class="radio-inline">
+			<input type="radio" id="public" name="isPublic" value="1"
+				th:checked="${response.isPublic == 1 ? 'checked' : ''}" required />
+			<label for="public">공개</label>
+		</div>
+		<div class="radio-inline">
+			<input type="radio" id="private" name="isPublic" value="0"
+				th:checked="${response.isPublic == 0 ? 'checked' : ''}" required />
+			<label for="private">비공개</label>
+		</div> -->
+		<!-- <div class="radio-inline">
+			<input type="radio" id="public" name="isPublic" value="1"
+				th:checked="${response.isPublic == 1}" required /> <label
+				for="public">공개</label>
+		</div>
+		<div class="radio-inline">
+			<input type="radio" id="private" name="isPublic" value="0"
+				th:checked="${response.isPublic == 0}" required /> <label
+				for="private">비공개</label>
+		</div> -->
 
-        <!--         기존에 있던 값 추가 못함, 가져온 response에 테마값이 없나? 있긴함,, 애매 -->
+		<div class="mb-3">
+			<label for="isPublic" class="form-label">공개여부</label>
+			<div class="radio-inline">
+				<input type="radio" id="public" name="isPublic" value="1"
+					th:checked="${response.isPublic == 1}" required /> <label
+					for="public">공개</label>
+			</div>
+			<div class="radio-inline">
+				<input type="radio" id="private" name="isPublic" value="0"
+					th:checked="${response.isPublic == 0}" required /> <label
+					for="private">비공개</label>
+			</div>
+		</div>
+
+
+
+
+
+
+
+			<!--         기존에 있던 값 추가 못함, 가져온 response에 테마값이 없나? 있긴함,, 애매 -->
         <!--<div class="mb-3">
             <label for="themeInput" class="form-label">테마</label>
             <input type="text" id="themeInput" class="form-control"
