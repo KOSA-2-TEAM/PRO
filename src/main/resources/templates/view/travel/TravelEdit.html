@@ -110,109 +110,89 @@
                 xhr.send(formData);
             }
         });
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelector('form').addEventListener('submit', function (event) {
-                // Validate form fields
-                const title = document.getElementById('title').value.trim();
-                const region = document.getElementById('region').value.trim();
-                const statDate = document.getElementById('statDate').value.trim();
-                const endDate = document.getElementById('endDate').value.trim();
-                const content = document.getElementById('content').value.trim();
-                const thumbnail = document.getElementById('thumbnail').files.length > 0;
-                const isPublic = document.querySelector('input[name="isPublic"]:checked') !== null;
-
-                if (!title || !region || !statDate || !endDate || !thumbnail || !isPublic || !content) {
-                    alert('모든 필드를 올바르게 입력해 주세요.');
-                    event.preventDefault();  // 폼 제출 방지
-                } else {
-                    tinymce.get('content').save();
-                }
-            });
-        });
+        
     </script>
 
-    <script>
-        function addTag() {
-            const input = document.getElementById('themeInput');
-            let tagValue = input.value.trim();
+	<script>
+	    document.addEventListener('DOMContentLoaded', function () {
+	        updateHiddenFields();
 
-            if (tagValue && !document.getElementById(tagValue)) {
-                const tag = document.createElement('span');
-                tag.className = 'tag';
-                tag.id = tagValue;
-                tag.textContent = tagValue;
+	        const existingThemes = document.querySelectorAll('#tagContainer .tag');
+	        existingThemes.forEach(function (tag) {
+	            const closeBtn = document.createElement('span');
+	            closeBtn.className = 'tag-close';
+	            closeBtn.textContent = ' x';
+	            closeBtn.onclick = function () {
+	                tag.remove();
+	                updateHiddenFields();
+	            };
+	            tag.appendChild(closeBtn);
+	        });
 
-                const closeBtn = document.createElement('span');
-                closeBtn.className = 'tag-close';
-                closeBtn.textContent = 'x';
-                closeBtn.onclick = function () {
-                    tagContainer.removeChild(tag);
-                    updateHiddenFields();
-                };
+	        updateHiddenFields();
+	    });
 
-                tag.appendChild(closeBtn);
-                document.getElementById('tagContainer').appendChild(tag);
-                input.value = '';
-                updateHiddenFields();
-            }
-        }
+	    function addTag() {
+	        const input = document.getElementById('themeInput');
+	        let tagValue = input.value.trim();
 
-        function updateHiddenFields() {
-            const tags = document.querySelectorAll('#tagContainer .tag');
-            const hiddenFieldsContainer = document.getElementById('hiddenFieldsContainer');
-            hiddenFieldsContainer.innerHTML = '';
+	        if (tagValue && !document.getElementById(tagValue)) {
+	            const tag = document.createElement('span');
+	            tag.className = 'tag';
+	            tag.id = tagValue;
+	            tag.textContent = tagValue;
 
-            Array.from(tags).forEach((tag, index) => {
-                const input = document.createElement('input');
-                input.type = 'hidden';
-                input.name = `travelThemeList[${index}].name`;
-                input.value = tag.id;
-                hiddenFieldsContainer.appendChild(input);
-            });
-        }
+	            const closeBtn = document.createElement('span');
+	            closeBtn.className = 'tag-close';
+	            closeBtn.textContent = ' x';
+	            closeBtn.onclick = function () {
+	                document.getElementById('tagContainer').removeChild(tag);
+	                updateHiddenFields();
+	            };
 
-        document.getElementById('themeInput').addEventListener('keydown', function (event) {
-            if (event.key === ' ') {
-                event.preventDefault();
-                addTag();
-            }
-        });
+	            tag.appendChild(closeBtn);
+	            document.getElementById('tagContainer').appendChild(tag);
+	            input.value = '';
+	            updateHiddenFields();
+	        }
+	    }
 
-        <!--새로운 값 추가-->
-     	
+	    function updateHiddenFields() {
+	        const tags = document.querySelectorAll('#tagContainer .tag');
+	        const hiddenFieldsContainer = document.getElementById('hiddenFieldsContainer');
+	        hiddenFieldsContainer.innerHTML = ''; 
 
-    </script>
+	        tags.forEach((tag, index) => {
+	            const input = document.createElement('input');
+	            input.type = 'hidden';
+	            input.name = `travelThemeList[${index}].name`;
+	            input.value = tag.id;
+	            hiddenFieldsContainer.appendChild(input);
+	        });
+	    }
+
+	    document.getElementById('themeInput').addEventListener('keydown', function (event) {
+	        if (event.key === ' ') {
+	            event.preventDefault();
+	            addTag();
+	        }
+	    });
+	</script>
+
 </head>
 <body>
 <div class="upload-container">
     <h1>여행앨범 수정하기</h1>
-    <form th:action="@{/api/travel/update}" method="post" enctype="multipart/form-data">
-    <!-- <form th:action="@{/api/travel/update/{travelIdx}(travelIdx=${response.id})}" method="post" enctype="multipart/form-data"> -->
-<!--        th:value="${response.title}"-->
+    <form th:action="@{/api/travel/update/{travelIdx}(travelIdx=${response.id})}" 
+      method="post" 
+      enctype="multipart/form-data">
         <div class="mb-3">
             <label for="title" class="form-label">제목</label>
             <input type="text" id="title" name="title" th:value="${response.title}" class="form-control" required/>
         </div>
 
-<!--         기존에 있던 값 추가 못함-->
         <div class="mb-3">
             <label for="region" class="form-label">지역</label>
-				<!-- <select id="region" name="region" class="form-select" required>
-                <option value="서울">서울</option>
-                <option value="인천">인천</option>
-                <option value="부산">부산</option>
-                <option value="대구">대구</option>
-                <option value="광주">광주</option>
-                <option value="대전">대전</option>
-                <option value="울산">울산</option>
-                <option value="세종">세종</option>
-                <option value="경기도">경기도</option>
-                <option value="강원도">강원도</option>
-                <option value="충청도">충청도</option>
-                <option value="전라도">전라도</option>
-                <option value="경상도">경상도</option>
-                <option value="제주도">제주도</option>
-            </select> -->
 			<select id="region" name="region" class="form-select" required>
 				<option value="서울" th:selected="${response.region == '서울'}">서울</option>
 				<option value="인천" th:selected="${response.region == '인천'}">인천</option>
@@ -232,128 +212,32 @@
 
 			</div>
 
-<!--        // th:value="${startDate}"-->
         <div class="mb-3">
             <label for="statDate" class="form-label">여행시작일</label>
             <input type="date" id="statDate" name="statDate" th:value="${startDate}" class="form-control" required/>
         </div>
 
-<!--        th:value="${endDAte}"-->
         <div class="mb-3">
             <label for="endDate" class="form-label">여행종료일</label>
             <input type="date" id="endDate" name="endDate" th:value="${endDAte}" class="form-control" required/>
         </div>
-
-<!--        th:value="${response.getThumbnail()}" -> 안됨.... 썸네일 이미지 안들어감 -->
-        <!-- <div class="mb-3">
-            <label for="thumbnail" class="form-label">대표사진</label>
-            <input type="file" id="thumbnail" name="thumbnail" class="form-control" accept="image/*"
-                   th:value="${response.getThumbnail()}" required/>
-        </div> -->
         
 		<div class="mb-3">
 			<label for="thumbnail" class="form-label">대표사진</label>
-			기존 이미지 미리보기
 			<div class="thumbnail-preview">
 				<img th:src="@{${response.thumbnail}}" alt="대표사진"
 					id="thumbnailImage" style="max-width: 200px;">
 			</div>
-			이미지 업로드 입력
+			<label for="thumbnail" class="form-label mt-2">이미지 업로드 입력</label>
 			<input type="file" id="thumbnail" name="thumbnail"
 				class="form-control" accept="image/*">
 		</div>
-		
 
-
-			<!-- 썸네일 미리보기 이미지 -->
-		<div class="thumbnail-preview">
-			<img src="[[${album.thumbnailUrl}]]" alt="썸네일 이미지"
-				id="thumbnailImage" style="max-width: 200px;">
-		</div>
-
-		<!-- 썸네일 업로드 input -->
-		<input type="file" name="thumbnail" id="thumbnailInput"
-			accept="image/*">
-
-			<!-- TinyMCE 에디터 적용된 내용 입력 -->
-<!--        th:text="${response.getContent()}"-->
         <div class="mb-3">
             <label for="content" class="form-label">내용</label>
             <textarea th:text="${response.getContent()}" id="content" name="content" class="form-control" rows="10"></textarea>
         </div>
 
-        <!--         기존에 있던 값 추가 못함-->
-        <!-- <div class="mb-3">
-            <label for="isPublic" class="form-label">공개여부 </label>
-            <div class="radio-inline">
-                <input type="radio" id="public" name="isPublic" value="1" required/>
-                <label for="public">공개</label>
-            </div>
-            <div class="radio-inline">
-                <input type="radio" id="private" name="isPublic" value="0" required/>
-                <label for="private">비공개</label>
-            </div>
-        </div> -->
-		<!-- <div class="mb-3">
-			<label for="isPublic" class="form-label">공개여부</label>
-			<div class="radio-inline">
-				<input type="radio" id="public" name="isPublic" value="1"
-					th:checked="${response.isPublic == 1}" required /> <label
-					for="public">공개</label>
-			</div>
-			<div class="radio-inline">
-				<input type="radio" id="private" name="isPublic" value="0"
-					th:checked="${response.isPublic == 0}" required /> <label
-					for="private">비공개</label>
-			</div>
-		</div> -->
-		<!-- <div class="mb-3">
-            <label for="isPublic" class="form-label">공개여부 </label>
-            <div class="radio-inline">
-                <input type="radio" id="public" name="isPublic" value="1" required/>
-                <label for="public">공개</label>
-            </div>
-            <div class="radio-inline">
-                <input type="radio" id="private" name="isPublic" value="0" required/>
-                <label for="private">비공개</label>
-            </div>
-        </div> -->
-		<!-- <div class="mb-3">
-			<label for="isPublic" class="form-label">공개여부</label>
-			<div class="radio-inline">
-				<input type="radio" id="public" name="isPublic" value="1"
-					th:checked="${response.isPublic == 1}" required /> <label
-					for="public">공개</label>
-			</div>
-			<div class="radio-inline">
-				<input type="radio" id="private" name="isPublic" value="0"
-					th:checked="${response.isPublic == 0}" required /> <label
-					for="private">비공개</label>
-			</div>
-		</div> -->
-		
-		
-		<!-- <div class="radio-inline">
-			<input type="radio" id="public" name="isPublic" value="1"
-				th:checked="${response.isPublic == 1 ? 'checked' : ''}" required />
-			<label for="public">공개</label>
-		</div>
-		<div class="radio-inline">
-			<input type="radio" id="private" name="isPublic" value="0"
-				th:checked="${response.isPublic == 0 ? 'checked' : ''}" required />
-			<label for="private">비공개</label>
-		</div> -->
-		<!-- <div class="radio-inline">
-			<input type="radio" id="public" name="isPublic" value="1"
-				th:checked="${response.isPublic == 1}" required /> <label
-				for="public">공개</label>
-		</div>
-		<div class="radio-inline">
-			<input type="radio" id="private" name="isPublic" value="0"
-				th:checked="${response.isPublic == 0}" required /> <label
-				for="private">비공개</label>
-		</div> -->
-
 		<div class="mb-3">
 			<label for="isPublic" class="form-label">공개여부</label>
 			<div class="radio-inline">
@@ -368,47 +252,25 @@
 			</div>
 		</div>
 
+			<div class="mb-3">
+				<label for="themeInput" class="form-label">테마</label> <input
+					type="text" id="themeInput" class="form-control"
+					onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }"
+					placeholder="Enter theme and press Space" />
+				<div id="tagContainer" class="mt-2">
+					<div th:each="theme : ${response.travelThemeList}">
+						<span class="tag" th:id="${theme.name}" th:text="${theme.name}">
+							<span class="tag-close"
+							onclick="this.parentElement.remove(); updateHiddenFields();">
+								x</span>
+						</span>
+					</div>
+				</div>
+			</div>
 
+			<div id="hiddenFieldsContainer"></div>
 
-
-
-
-
-			<!--         기존에 있던 값 추가 못함, 가져온 response에 테마값이 없나? 있긴함,, 애매 -->
-        <!--<div class="mb-3">
-            <label for="themeInput" class="form-label">테마</label>
-            <input type="text" id="themeInput" class="form-control"
-                   onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }"
-                   placeholder="Enter theme and press Space"/>
-            <div id="tagContainer" class="mt-2"></div>
-        </div>-->
-        <!--&#45;&#45; 기존에 있던 값 조회-->
-        <!--<div class="mb-3">
-            <label for="themeInput" class="form-label">테마</label>
-            <input type="text" id="themeInput" class="form-control" onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }" placeholder="Enter theme and press Space"/>
-            <div id="tagContainer" class="mt-2">
-                &lt;!&ndash; 기존 테마 리스트 렌더링 &ndash;&gt;
-                <div th:each="theme : ${response.travelThemeList}">
-                    <span class="tag" th:id="${theme.name}" th:text="${theme.name}"></span>
-                </div>
-            </div>
-        </div>-->
-        <!--&#45;&#45; 기존에 있던 값에 삭제 버튼 추가, 기능x-->
-        <div class="mb-3">
-            <label for="themeInput" class="form-label">테마</label>
-            <input type="text" id="themeInput" class="form-control" onkeydown="if(event.code === 'Space') { event.preventDefault(); addTag(); }" placeholder="Enter theme and press Space"/>
-            <div id="tagContainer" class="mt-2">
-                <!-- 기존 테마 리스트 렌더링 및 삭제 버튼 추가 -->
-                <div th:each="theme : ${response.travelThemeList}">
-                    <span class="tag" th:id="${theme.name}" th:text="${theme.name}"></span>
-                    <button type="button" class="btn btn-sm btn-danger" th:onclick="'removeTag(' + theme.name + ')'">X</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="hiddenFieldsContainer"></div>
-
-        <button type="submit" class="btn btn-primary">수정완료</button>
+			<button type="submit" class="btn btn-primary">수정완료</button>
     </form>
 </div>
 

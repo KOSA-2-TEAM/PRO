@@ -31,6 +31,7 @@ public class TravleUpdateController {
 	private final UserService userService;
 	private final AmazonS3Manager s3ImgService;
 	
+	// 수정 폼 페이지
 	@GetMapping("/update/{travelIdx}")
 	public String updateTravelBoard(@PathVariable Integer travelIdx, Model model) {
 		String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -64,143 +65,27 @@ public class TravleUpdateController {
 		return "view/travel/TravelEdit";
 	}
 	
-	
-//	@PostMapping("/update/{travelIdx}")
-//	public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//	                                      @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//	                                      RedirectAttributes redirectAttributes) {
-//	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//	    Users user = userService.findByEmail(email);
-//	    
-//	    // 유효성 검사 제거하고 업데이트 시도
-//	    travelService.updateTravelBoard(travelIdx, request, user);
-//	    
-//	    // 성공 메시지와 함께 상세 페이지로 리다이렉트
-//	    redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//	    return "redirect:/api/travel/detail/" + travelIdx;
-//	}
-
-	
-//	@PostMapping("/update/{travelIdx}")
-//	public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//	                                      @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//	                                      RedirectAttributes redirectAttributes) {
-//	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//	    Users user = userService.findByEmail(email);
-//	    boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//	    if (updateResult) {
-//	        redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//	        return "redirect:/api/travel/detail/" + travelIdx;  // 수정 후 상세 조회 페이지로 리다이렉트
-//	    } else {
-//	        redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//	        return "redirect:/api/travel/update/" + travelIdx;  // 실패 시, 수정 폼으로 리다이렉트
-//	    }
-//	}
-
-
-
-//	// 여행앨범 수정
-//    @PostMapping("/update/{travelIdx}")
-//    public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//                                          @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//                                          RedirectAttributes redirectAttributes) {
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        Users user = userService.findByEmail(email);
-//        boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//        if (updateResult) {
-//            redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//            return "redirect:/api/travel/detail/" + travelIdx;  // 수정 후 상세 조회 페이지로 리다이렉트
-//        } else {
-//            redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//            return "redirect:/api/travel/update/" + travelIdx;  // 실패 시, 수정 폼으로 리다이렉트
-//        }
-//    }
-	
-//	@PostMapping("/update/{travelIdx}")
-//	public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//	                                      @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//	                                      RedirectAttributes redirectAttributes) {
-//	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//	    Users user = userService.findByEmail(email);
-//	    boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//	    if (updateResult) {
-//	        redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//	        return "redirect:/api/travel/detail/" + travelIdx;  // 수정 후 상세 조회 페이지로 리다이렉트
-//	    } else {
-//	        redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//	        return "redirect:/api/travel/update/" + travelIdx;  // 실패 시, 수정 폼으로 리다이렉트
-//	    }
-//	}
-	
-//	@PostMapping("/update/{travelIdx}")
-//	public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//	                                      @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//	                                      RedirectAttributes redirectAttributes) {
-//	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//	    Users user = userService.findByEmail(email);
-//	    boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//	    if (updateResult) {
-//	        redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//	        return "redirect:/api/travel/detail/" + travelIdx;  // 수정 후 상세 조회 페이지로 리다이렉트
-//	    } else {
-//	        redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//	        return "redirect:/api/travel/update/" + travelIdx;  // 실패 시, 수정 폼으로 리다이렉트
-//	    }
-//	}
-	
-//	@PostMapping("/update/{travelIdx}")
-//	public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//	                                      @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//	                                      RedirectAttributes redirectAttributes) {
-//	    String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//	    Users user = userService.findByEmail(email);
-//	    boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//	    if (updateResult) {
-//	        redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//	        return "redirect:/api/travel/detail/{travelIdx}";  // 수정 후 상세 조회 페이지로 리다이렉트
-//	    } else {
-//	        redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//	        return "redirect:/api/travel/update/{travelIdx}";  // 실패 시, 수정 폼으로 리다이렉트
-//	    }
-//	}
-	
-//	@PostMapping("/update/{travelIdx}")
-//    public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
-//                                          @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
-//                                          RedirectAttributes redirectAttributes) {
-//        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-//        Users user = userService.findByEmail(email);
-//        boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
-//
-//        if (updateResult) {
-//            redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
-//            return "redirect:/api/travel/detail/" + travelIdx;  // 수정 후 상세 조회 페이지로 리다이렉트
-//        } else {
-//            redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
-//            return "redirect:/api/travel/update/" + travelIdx;  // 실패 시, 수정 폼으로 리다이렉트
-//        }
-//    }
-
-	
-
-	
-	
-    // 기존 값 못 불러옴(지역, 대표사진, 공개여부), 테마 삭제 버튼 수정 필요
-
-    ////////////////////////////////////////////////////////////////////////////////////
-	
-    // 여행앨범 생성
-    /*@PostMapping("/create2222")
-    public String createTravelAlbum(@ModelAttribute("request") createTravelAlbumDTO request,
-                                    RedirectAttributes redirectAttributes) {
+	// 수정 완료 후
+	@PostMapping("/update/{travelIdx}")
+    public String submitUpdateTravelBoard(@PathVariable Integer travelIdx,
+                                          @ModelAttribute("request") TravelAlbumUpdateRequestDTO request,
+                                          RedirectAttributes redirectAttributes) {
+        // 현재 로그인한 사용자의 이메일 정보로 사용자 확인
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        TravelAlbumResultDTO response = travelService.postTravelAlbum(email, request);
-        redirectAttributes.addAttribute("id", response.getTravelIdx());
-        return "redirect:/api/travel/detail/{id}";
-    }*/
+        Users user = userService.findByEmail(email);
+
+        // 여행 보드 업데이트 시도
+        boolean updateResult = travelService.updateTravelBoard(travelIdx, request, user);
+
+        if (updateResult) {
+            // 수정 성공 시 해당 여행보드 상세 페이지로 리다이렉트
+            redirectAttributes.addFlashAttribute("successMessage", "여행앨범이 성공적으로 업데이트 되었습니다.");
+            return "redirect:/api/travel/detail/" + travelIdx;
+        } else {
+            // 수정 실패 시 다시 수정 페이지로 리다이렉트
+            redirectAttributes.addFlashAttribute("errorMessage", "여행앨범 업데이트에 실패했습니다.");
+            return "redirect:/api/travel/update/" + travelIdx;
+        }
+    }
+	
 }

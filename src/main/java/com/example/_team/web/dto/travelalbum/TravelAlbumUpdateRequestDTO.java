@@ -18,8 +18,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TravelAlbumUpdateRequestDTO {
 	private String title;
-//    String region;
-//	private Region region;
 	private String region;
 	private LocalDate statDate;
 	private LocalDate endDate;
