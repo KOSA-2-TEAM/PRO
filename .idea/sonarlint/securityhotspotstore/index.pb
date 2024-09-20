@@ -52,7 +52,5 @@ o
 ?src/main/java/com/example/_team/repository/BoardRepository.java,d/c/dcd80e8b057fcd438068ae13000670da2e58553d
 i
 9src/main/java/com/example/_team/service/BoardService.java,a/b/abd6c27c977bf3dccdea4b079a223c28dc2e34db
-m
-=src/main/java/com/example/_team/service/BoardServiceImpl.java,a/3/a33aedc55b410fb75d6f22626c788763e794f4c7
 r
 Bsrc/main/java/com/example/_team/controller/BoardApiController.java,d/b/db40ee5ecd5c751a855d120db3a8e21bec530688
