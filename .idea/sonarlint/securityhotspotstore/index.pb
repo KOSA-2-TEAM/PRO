@@ -44,8 +44,6 @@ o
 0src/main/java/com/example/_team/Application.java,c/2/c2c41f3d7d20a8d0e39e67be7005955089b5adb2
 u
 Esrc/main/java/com/example/_team/repository/TravelImageRepository.java,3/9/39508b1c5e49f21dddecf72b6a02e1352ae90f14
-n
->src/main/java/com/example/_team/global/s3/AmazonS3Manager.java,8/1/81b0bd0c6fd61e86c7ff0afbf18544383bca1d73
 k
 ;src/main/java/com/example/_team/domain/enums/Authority.java,a/a/aa6e859c84a029a3fa131c5741d1aa439b7df6e1
 m

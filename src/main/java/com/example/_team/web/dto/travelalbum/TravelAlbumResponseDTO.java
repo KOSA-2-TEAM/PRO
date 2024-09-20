@@ -34,10 +34,12 @@ public class TravelAlbumResponseDTO {
         String thumbnail;
         String title;
         Long postLikeCount;  // 좋아요
+        Integer isPublic;
         boolean likedByCurrentUser; // 현재 사용자가 좋아요 눌렀는지 여부
         List<TravelAlbumImageListDTO> travelAlbumImageList;
         List<TravelThemeListDTO> travelThemeList;
     }
+
 
     @Builder
     @Data

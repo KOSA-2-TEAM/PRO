@@ -25,6 +25,7 @@ import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumR
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelAlbumResultMapDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.TravelThemeListDTO;
 import com.example._team.web.dto.travelalbum.TravelAlbumResponseDTO.myTravelAlbumListDTO;
+import com.example._team.web.dto.travelalbum.TravelAlbumUpdateRequestDTO;
 import com.example._team.web.dto.user.UserResponseDTO.UserListByPostLikesDTO;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -268,6 +269,7 @@ public class TravelService {
                 .dateRange(formattedDateRange)
                 .postLikeCount(postLikesCnt)
                 .likedByCurrentUser(likedByCurrentUser)
+                .isPublic(travelBoard.getIsPublic())
                 .travelAlbumImageList(imageList)
                 .travelThemeList(themeList)
                 .build();
@@ -385,5 +387,45 @@ public class TravelService {
             dto.setId(board.getId());
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public boolean updateTravelBoard(Integer travelIdx, TravelAlbumUpdateRequestDTO request, Users user) {
+        TravelBoard travelBoard = travelRepository.findById(travelIdx)
+                .orElseThrow(() -> new DataNotFoundException("해당 여행앨범이 존재하지 않습니다."));
+
+        // 현재 사용자가 소유자인지 확인
+        if (!travelBoard.getUserIdx().equals(user)) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        // 여행 보드 업데이트
+        travelBoard.setTitle(request.getTitle());
+        travelBoard.setContent(request.getContent());
+        travelBoard.setRegion(Region.valueOf(request.getRegion()));
+        travelBoard.setStatDate(request.getStatDate());
+        travelBoard.setEndDate(request.getEndDate());
+        travelBoard.setIsPublic(request.getIsPublic());
+
+        // 썸네일 이미지가 새로 업로드된 경우
+        if (request.getThumbnail() != null && !request.getThumbnail().isEmpty()) {
+            MultipartFile thumbnailFile = request.getThumbnail();
+            String thumbnailFileName = UUID.randomUUID().toString().substring(0, 10) + "-" + thumbnailFile.getOriginalFilename();
+            String thumbnailKeyName = "travel/thumbnail/" + thumbnailFileName;
+            String thumbnailUrl = s3ImgService.uploadFile(thumbnailKeyName, thumbnailFile);
+            travelBoard.setThumbnail(thumbnailUrl);
+        }
+
+        // 테마 업데이트 (기존 테마 삭제 후 새로운 테마 추가)
+        themeRepository.deleteByTravelIdx(travelBoard);
+        request.getTravelThemeList().forEach(themeRequest -> {
+            Theme theme = new Theme();
+            theme.setName(themeRequest.getName());
+            theme.setTravelIdx(travelBoard);
+            themeRepository.save(theme);
+        });
+
+        travelRepository.save(travelBoard);
+        return true;
     }
 }
